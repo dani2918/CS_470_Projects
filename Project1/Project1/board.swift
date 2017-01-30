@@ -15,7 +15,7 @@ class Board
     public init()
     {
         var num = 0
-        let randMoves = 4
+        let randMoves = 1000
         for i in 0..<3
         {
             for j in 0..<3
@@ -135,7 +135,8 @@ class Board
     
     func checkBoard() -> Bool
     {
-        var checkNum = 0
+        var checkNumFirst = 0
+        var checkNumLast = 1
         
         for i in 0..<3
         {
@@ -143,22 +144,17 @@ class Board
             {
                 // Case where the blank is at the end
                 // 1 is first
-                if(i == 0 && j == 0)
+                if(i == 2 && j == 2)
                 {
-                    if(gameBoard[i][j] == 1)
-                    {
-                        checkNum += 1
-                    }
+                    checkNumLast = 0
                 }
-                if(gameBoard[i][j] != checkNum)
+                
+                if(gameBoard[i][j] != checkNumFirst && gameBoard[i][j] != checkNumLast)
                 {
-                    // if not in the last spot with the blank
-                    if(i != 2 && j != 2 && gameBoard[i][j] != 0)
-                    {
-                        return false
-                    }
+                    return false
                 }
-                    checkNum += 1
+                checkNumFirst += 1
+                checkNumLast += 1
                 
                 
             }

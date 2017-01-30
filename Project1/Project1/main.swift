@@ -10,6 +10,7 @@ import Foundation
 
 
 let board = Board()
+
 let user = User(sendBoard: board)
 
 print("Enter u for user mode; enter q to quit at any time")
