@@ -15,7 +15,7 @@ class Board
     public init()
     {
         var num = 0
-        let randMoves = 10
+        let randMoves = 10000
         for i in 0..<3
         {
             for j in 0..<3
@@ -160,7 +160,6 @@ class Board
                 
             }
         }
-        
         
 //        print("BOARD SOLVED")
         return true
