@@ -736,20 +736,45 @@
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f3c-4J-Jb5">
+                                <rect key="frame" x="373" y="228" width="96" height="22"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" title="3" placeholderString="3" drawsBackground="YES" id="Aw0-bW-T81">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                                <connections>
+                                    <action selector="sizeCount:" target="XfG-lQ-9wD" id="qD2-Tn-5bA"/>
+                                </connections>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="k9U-d1-4fM">
+                                <rect key="frame" x="387" y="253" width="69" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Board Size" id="DYA-dH-VN6">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                         </subviews>
                         <constraints>
                             <constraint firstItem="xRm-jA-ih5" firstAttribute="centerY" secondItem="q2w-ND-Jq4" secondAttribute="centerY" constant="-31" id="ARq-oy-wje"/>
+                            <constraint firstItem="f3c-4J-Jb5" firstAttribute="top" secondItem="WOv-hW-NPk" secondAttribute="top" id="DYV-mQ-ne1"/>
                             <constraint firstItem="q2w-ND-Jq4" firstAttribute="centerX" secondItem="m2S-Jp-Qdl" secondAttribute="centerX" id="K7M-AL-YPM"/>
                             <constraint firstItem="q2w-ND-Jq4" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="10" id="Kyx-pL-O2x"/>
                             <constraint firstItem="q2w-ND-Jq4" firstAttribute="centerY" secondItem="m2S-Jp-Qdl" secondAttribute="centerY" id="RF7-r8-Q8Z"/>
+                            <constraint firstItem="f3c-4J-Jb5" firstAttribute="leading" secondItem="q2w-ND-Jq4" secondAttribute="trailing" constant="8" symbolic="YES" id="TcF-fT-Z47"/>
                             <constraint firstItem="xRm-jA-ih5" firstAttribute="centerX" secondItem="q2w-ND-Jq4" secondAttribute="centerX" id="e98-OV-7s5"/>
+                            <constraint firstItem="k9U-d1-4fM" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" id="gfe-aF-3L0"/>
                             <constraint firstItem="WOv-hW-NPk" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="20" id="t7k-pR-b3J"/>
+                            <constraint firstItem="f3c-4J-Jb5" firstAttribute="centerX" secondItem="k9U-d1-4fM" secondAttribute="centerX" id="wzi-Os-aFe"/>
                             <constraint firstItem="q2w-ND-Jq4" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="115" id="xJz-Xw-uqj"/>
                             <constraint firstItem="q2w-ND-Jq4" firstAttribute="leading" secondItem="WOv-hW-NPk" secondAttribute="trailing" constant="29" id="yhF-CW-lv7"/>
+                            <constraint firstItem="k9U-d1-4fM" firstAttribute="leading" secondItem="q2w-ND-Jq4" secondAttribute="trailing" constant="24" id="z4t-cl-AhA"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="gridView" destination="eAq-3G-abf" id="mHZ-BL-hZm"/>
+                        <outlet property="sizeText" destination="f3c-4J-Jb5" id="bIx-gU-0GN"/>
                         <outlet property="winText" destination="xRm-jA-ih5" id="GON-hF-Pco"/>
                     </connections>
                 </viewController>

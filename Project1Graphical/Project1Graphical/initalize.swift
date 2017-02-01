@@ -11,13 +11,21 @@
 //
 
 
-let board = Board()
+var board = Board(givenSize: size)
 
 let user = User(sendBoard: board)
+var size = 3
 
+
+func setSize(sentSize: Int)
+{
+    size = sentSize
+    //print(size)
+}
 
 func getBoard() -> Board
 {
+    board = Board(givenSize: size)
     return board;
 }
 

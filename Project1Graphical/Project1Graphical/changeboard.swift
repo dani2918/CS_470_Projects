@@ -3,32 +3,29 @@
 //  Project1Graphical
 //
 //  Created by Matt Daniel on 1/31/17.
-//  Copyright © 2017 Matthew Daniel. All rights reserved.
-//
+//  May expand for animations
 
 import Foundation
 import Cocoa
 
 
 
-func updateTiles(board: Board, labelArray : [[NSButton]])
+func updateTiles(board: Board, labelArray : [[NSButton]], size: Int)
 {
-    let paraStyle = NSMutableParagraphStyle()
-    paraStyle.alignment = .center
 
-    for i in 0..<3
+    for i in 0..<size
     {
-        for j in 0..<3
+        for j in 0..<size
         {
+            //Fill a blank for 0
             if(board.gameBoard[i][j] == 0)
             {
-                labelArray[i][j].title = ""
-                //labelArray[i][j].color = NSColor.lightGray
+                labelArray[i][j].title = "⬛️"
             }
+            //Fill numbers
             else
             {
                 labelArray[i][j].title = "\(board.gameBoard[i][j])"
-//                labelArray[i][j].backgroundColor = NSColor.white
             }
         }
     }

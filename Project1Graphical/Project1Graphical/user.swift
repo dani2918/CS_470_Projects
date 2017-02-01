@@ -16,10 +16,12 @@ class User
         board = sendBoard
     }
     
+    //Function for command line mode
+    //Not is use for graphical version
     func promptUser()
     {
         print("Enter a tile to move, or 'q' to quit")
-        var usrStr = readLine()
+        let usrStr = readLine()
         if(usrStr == "q")
         {
             print("Goodbye")
@@ -36,8 +38,6 @@ class User
             {
                 print("Invalid Input")
             }
-
-   
         }
         
     }
