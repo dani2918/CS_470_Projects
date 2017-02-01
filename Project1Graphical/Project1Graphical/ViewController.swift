@@ -102,9 +102,12 @@ class ViewController: NSViewController
     
     func clickOnTile(sender: NSButton)
     {
-        // Get tile value or '0' if blank
-        board.move(loc: board.getLoc(value: (Int(sender.title) ?? 0)), entryMode: "user")
-        updateTiles(board: board, labelArray: labelArray, size: size)
+        if(!board.checkBoard())
+        {
+            // Get tile value or '0' if blank
+            board.move(loc: board.getLoc(value: (Int(sender.title) ?? 0)), entryMode: "user")
+            updateTiles(board: board, labelArray: labelArray, size: size)
+        }
         // If user wins, display winning text
         if(board.checkBoard())
         {
