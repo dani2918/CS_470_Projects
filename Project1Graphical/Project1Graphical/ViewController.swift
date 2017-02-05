@@ -21,13 +21,13 @@ class ViewController: NSViewController
     var board = getBoard()
     var user = getUser()
     
-    // Reset board on reset button click
-    @IBAction func resetBoard(_ sender: Any)
+    @IBAction func newGame(_ sender: Any)
     {
         board.setupBoard(moves: 1000*size)
         updateTiles(board: board, labelArray: labelArray, size: size)
         winText.isHidden = true
     }
+
     
     // Set up board with new dimensions between 3x3 and 5x5
     @IBAction func sizeCount(_ sender: Any)
@@ -40,7 +40,7 @@ class ViewController: NSViewController
                 setSize(sentSize: size)
                 board = getBoard()
                 setupGrid()
-                resetBoard(Any.self)
+                newGame(Any.self)
             }
             else
             {

@@ -34,6 +34,7 @@ func getUser() -> User
     return user
 }
 
+// Prompts for command line
 //
 //print("Enter u for user mode; enter q to quit at any time")
 //print("Enter Mode: ")

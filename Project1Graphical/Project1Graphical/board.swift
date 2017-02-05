@@ -11,6 +11,7 @@ class Board
 {
     var size = 3
     var gameBoard: [[Int]] = Array(repeating: Array(repeating: 0, count: 5), count: 5)
+    var startingBoard: [[Int]] = Array(repeating: Array(repeating: 0, count: 5), count: 5)
     var blankLoc = (0,0)
     
     public init(givenSize: Int)
@@ -34,8 +35,12 @@ class Board
             setupBoard(moves: randMoves)
 
         }
+        startingBoard = gameBoard
     }
-    
+    func getResetBoard()
+    {
+        gameBoard = startingBoard
+    }
     // Print board to stdout
     func printBoard()
     {

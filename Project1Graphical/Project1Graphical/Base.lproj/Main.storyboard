@@ -715,16 +715,6 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>
-                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="WOv-hW-NPk">
-                                <rect key="frame" x="17" y="222" width="75" height="32"/>
-                                <buttonCell key="cell" type="push" title="Reset" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="sFP-Mj-Sjt">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="resetBoard:" target="XfG-lQ-9wD" id="CjZ-Z8-W1f"/>
-                                </connections>
-                            </button>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xRm-jA-ih5">
                                 <rect key="frame" x="95" y="122" width="290" height="88"/>
                                 <constraints>
@@ -755,6 +745,16 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="WOv-hW-NPk">
+                                <rect key="frame" x="1" y="222" width="106" height="32"/>
+                                <buttonCell key="cell" type="push" title="New Game" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="sFP-Mj-Sjt">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <connections>
+                                        <action selector="newGame:" target="XfG-lQ-9wD" id="kaZ-Ng-VC2"/>
+                                    </connections>
+                                </buttonCell>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="xRm-jA-ih5" firstAttribute="centerY" secondItem="q2w-ND-Jq4" secondAttribute="centerY" constant="-31" id="ARq-oy-wje"/>
@@ -768,7 +768,7 @@
                             <constraint firstItem="WOv-hW-NPk" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="20" id="t7k-pR-b3J"/>
                             <constraint firstItem="f3c-4J-Jb5" firstAttribute="centerX" secondItem="k9U-d1-4fM" secondAttribute="centerX" id="wzi-Os-aFe"/>
                             <constraint firstItem="q2w-ND-Jq4" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="115" id="xJz-Xw-uqj"/>
-                            <constraint firstItem="q2w-ND-Jq4" firstAttribute="leading" secondItem="WOv-hW-NPk" secondAttribute="trailing" constant="29" id="yhF-CW-lv7"/>
+                            <constraint firstItem="q2w-ND-Jq4" firstAttribute="leading" secondItem="WOv-hW-NPk" secondAttribute="trailing" constant="14" id="yhF-CW-lv7"/>
                             <constraint firstItem="k9U-d1-4fM" firstAttribute="leading" secondItem="q2w-ND-Jq4" secondAttribute="trailing" constant="24" id="z4t-cl-AhA"/>
                         </constraints>
                     </view>
