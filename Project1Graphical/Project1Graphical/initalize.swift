@@ -12,8 +12,8 @@
 
 
 var board = Board(givenSize: size)
-
 let user = User(sendBoard: board)
+let bfs = BFS(start: board)
 var size = 3
 
 
@@ -32,6 +32,11 @@ func getBoard() -> Board
 func getUser() -> User
 {
     return user
+}
+
+func getBFS() -> BFS
+{
+    return bfs
 }
 
 // Prompts for command line

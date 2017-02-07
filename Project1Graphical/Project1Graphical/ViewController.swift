@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import Darwin
 
 class ViewController: NSViewController
 {
@@ -17,15 +18,26 @@ class ViewController: NSViewController
     var labelArray = Array(repeating: Array(repeating: NSButton(), count: 5), count: 5)
     @IBOutlet weak var winText: NSTextField!
     @IBOutlet weak var sizeText: NSTextField!
-    
+    @IBOutlet weak var moveCounter: NSTextField!
+
+   
     var board = getBoard()
     var user = getUser()
+
+    
+    
+   
+    
     
     @IBAction func newGame(_ sender: Any)
     {
+
         board.setupBoard(moves: 1000*size)
         updateTiles(board: board, labelArray: labelArray, size: size)
         winText.isHidden = true
+        let mc = board.getMoveCount()
+        moveCounter.stringValue = String(mc)
+
     }
 
     
@@ -53,6 +65,16 @@ class ViewController: NSViewController
         }
     }
     
+    @IBAction func breadthFirstSearch(_ sender: Any)
+    {
+        let bfs = BFS(start: board)
+        board = bfs.board
+        updateTiles(board: board, labelArray: labelArray, size: size)
+        bfs.solve()
+        board = bfs.getBoard()
+        updateTiles(board: board, labelArray: labelArray, size: size)
+    }
+   
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -102,10 +124,14 @@ class ViewController: NSViewController
     
     func clickOnTile(sender: NSButton)
     {
+//        board.boardList.append(board.gameBoard)
+//        print(board.boardList[0])
+        
         if(!board.checkBoard())
         {
             // Get tile value or '0' if blank
             board.move(loc: board.getLoc(value: (Int(sender.title) ?? 0)), entryMode: "user")
+//            board.moveDirection(dir: "east")
             updateTiles(board: board, labelArray: labelArray, size: size)
         }
         // If user wins, display winning text
@@ -113,8 +139,15 @@ class ViewController: NSViewController
         {
             winText.isHidden = false
         }
+        let mc = board.getMoveCount()
+        moveCounter.stringValue = String(mc)
+        
+//        if(board.checkBoardsEqual())
+//        {
+//            print("EQUAL")
+//        }
     }
-
+    
 
 }
 

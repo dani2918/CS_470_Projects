@@ -12,7 +12,15 @@ class Board
     var size = 3
     var gameBoard: [[Int]] = Array(repeating: Array(repeating: 0, count: 5), count: 5)
     var startingBoard: [[Int]] = Array(repeating: Array(repeating: 0, count: 5), count: 5)
+    var tmpBoard: [[Int]] = Array(repeating: Array(repeating: 0, count: 5), count: 5)
     var blankLoc = (0,0)
+    var moveCount = 0
+    
+    var boardList = [[[Int]]]()
+    var closedList = [[[Int]]]()
+    
+//    var children: [[[Int]]]?
+//    var parent: [[Int]]?
     
     public init(givenSize: Int)
     {
@@ -33,9 +41,9 @@ class Board
         {
             print("Reconfiguring Board...")
             setupBoard(moves: randMoves)
-
         }
         startingBoard = gameBoard
+       
     }
     func getResetBoard()
     {
@@ -70,6 +78,7 @@ class Board
         {
             randMove()
         }
+        moveCount = 0
     }
     
     //Do the random moves, ignore them if they're illegal
@@ -79,9 +88,51 @@ class Board
     }
     
     
+    func moveDirection(dir: String)
+    {
+        var loc: (Int, Int)
+        tmpBoard = gameBoard
+        blankLoc = getLoc(value: 0)
+        switch dir
+        {
+        case "north":
+            if(blankLoc.0 < size - 1)
+            {
+                loc = (blankLoc.0 + 1, blankLoc.1)
+                move(loc: loc, entryMode:"search")
+            }
+            break
+        case "east":
+            if(blankLoc.1 > 0)
+            {
+                loc = (blankLoc.0, blankLoc.1 - 1)
+                move(loc: loc, entryMode:"search")
+            }
+            break
+        case "south":
+            if(blankLoc.0 > 0)
+            {
+                loc = (blankLoc.0 - 1, blankLoc.1)
+                move(loc: loc, entryMode:"search")
+            }
+            break
+        case "west":
+            if(blankLoc.1 < size - 1)
+            {
+                loc = (blankLoc.0, blankLoc.1 + 1)
+                move(loc: loc, entryMode:"search")
+            }
+            break
+        default:
+            break
+        }
+        
+    }
+    
+    
     func move(loc: (Int,Int), entryMode: String)
     {
-        if(legalMove(loc: loc))
+        if(legalMove(loc: loc) && entryMode != "search")
         {
             let tmp = gameBoard[blankLoc.0][blankLoc.1]
             gameBoard[blankLoc.0][blankLoc.1] = gameBoard[loc.0][loc.1]
@@ -97,19 +148,31 @@ class Board
             //Report solved board to command line
             if(entryMode == "user" || entryMode == "search")
             {
+                
                 if(checkBoard())
                 {
+                   
                     print("BOARD SOLVED!")
                     //Only exit on command line
                     //exit(1)
                 }
+                moveCount += 1;
             }
             
         }
+        else if(legalMove(loc: loc) && entryMode == "search")
+        {
+            let tmpBlankLoc = getLoc(value: 0)
+            let tmp = tmpBoard[tmpBlankLoc.0][tmpBlankLoc.1]
+            tmpBoard[tmpBlankLoc.0][tmpBlankLoc.1] = tmpBoard[loc.0][loc.1]
+            tmpBoard[loc.0][loc.1] = tmp
+            boardList.append(tmpBoard)
+
+        }
         else
         {
-            //Will print to stdout, but no action on
-            //wrong square click
+            // Will print to stdout, but no action on
+            // wrong square click
             if(entryMode == "user")
             {
                 print()
@@ -178,6 +241,46 @@ class Board
 //      print("BOARD SOLVED")
         return true
     }
+  
+    
+    func checkBoardsEqual() -> Bool
+    {
+        if(closedList.count == 0)
+        {
+            return false
+        }
+    
+        var flag = true
+        for i in 0..<closedList.count
+        {
+            flag = true
+            for j in 0..<size
+            {
+                for k in 0..<size
+                {
+//                    print("\(gameBoard[j][k]), \(closedList[i][j][k])")
+                    if(gameBoard[j][k] != closedList[i][j][k])
+                    {
+                        flag = false
+                    }
+                }
+                
+            }
+            if(flag == true)
+            {
+//                print("***********")
+//                print("Equal Boards")
+//                printBoard()
+//                print("***********")
+                return true
+            }
+        }
+        if(flag == true)
+        {
+            print("Equal Boards")
+        }
+        return flag
+    }
     
     // Return the (x,y) position of a certain numbered square
     func getLoc(value: Int) -> (Int, Int)
@@ -193,9 +296,13 @@ class Board
             }
         }
         
-        //Handles case of numbers outside of 1..8 range
+        //Handles case of numbers outside of 1..n*n range
         //Will return blank location and not make a move
         return blankLoc
     }
     
+    func getMoveCount() -> Int
+    {
+        return moveCount
+    }
 }
