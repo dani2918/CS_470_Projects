@@ -19,31 +19,39 @@ class ViewController: NSViewController
     @IBOutlet weak var winText: NSTextField!
     @IBOutlet weak var sizeText: NSTextField!
     @IBOutlet weak var moveCounter: NSTextField!
+    @IBOutlet weak var newButton: NSButton!
 
    
     var board = getBoard()
     var user = getUser()
 
     
-    
-   
-    
-    
-    @IBAction func newGame(_ sender: Any)
+    // Delay function from: http://stackoverflow.com/questions/39787319/add-a-delay-to-a-for-loop-in-swift
+    func delay(_ delay:Double, closure:@escaping ()->())
     {
-
+        DispatchQueue.main.asyncAfter(
+            deadline: DispatchTime.now() + Double(Int64(delay * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: closure)
+    }
+   
+    @IBAction func newGame(_ sender: NSButton)
+    {
+//        print("NEWGAME")
         board.setupBoard(moves: 1000*size)
         updateTiles(board: board, labelArray: labelArray, size: size)
         winText.isHidden = true
         let mc = board.getMoveCount()
         moveCounter.stringValue = String(mc)
-
+        
     }
+    
+    
+
 
     
     // Set up board with new dimensions between 3x3 and 5x5
-    @IBAction func sizeCount(_ sender: Any)
+    @IBAction func sizeCount(_ sender: NSButton)
     {
+//        print(sender.title)
         if let testSize = Int(sizeText.stringValue)
         {
             if(testSize >= 3 && testSize <= 5)
@@ -52,7 +60,7 @@ class ViewController: NSViewController
                 setSize(sentSize: size)
                 board = getBoard()
                 setupGrid()
-                newGame(Any.self)
+                newButton.performClick(nil)
             }
             else
             {
@@ -64,15 +72,39 @@ class ViewController: NSViewController
             size = 3
         }
     }
+   
     
     @IBAction func breadthFirstSearch(_ sender: Any)
     {
         let bfs = BFS(start: board)
         board = bfs.board
         updateTiles(board: board, labelArray: labelArray, size: size)
-        bfs.solve()
-        board = bfs.getBoard()
-        updateTiles(board: board, labelArray: labelArray, size: size)
+        var movesList = [Board]()
+        movesList = bfs.solve()
+        print("SOLVED")
+        for i in 0..<movesList.count
+        {
+        //board = bfs.getSolvedBoard()
+//            movesList[i].printBoard()
+            let delayTime = Double(i + 1)
+            delay(delayTime)
+            {
+                updateTiles(board: movesList[i], labelArray: self.labelArray, size: self.size)
+                movesList[i].printBoard()
+                
+                self.moveCounter.stringValue = String(i+1)
+                if(i == movesList.count - 1)
+                {
+                    self.board = movesList[movesList.endIndex-1]
+                    if(self.board.checkBoard())
+                    {
+                        self.winText.isHidden = false
+                    }
+                    
+                }
+            }
+            
+        }
     }
    
     
@@ -87,6 +119,8 @@ class ViewController: NSViewController
         // Update the view, if already loaded.
         }
     }
+    
+    
     
     // Called when setting up an initial board or board w new dimensions
     func setupGrid()
@@ -131,7 +165,6 @@ class ViewController: NSViewController
         {
             // Get tile value or '0' if blank
             board.move(loc: board.getLoc(value: (Int(sender.title) ?? 0)), entryMode: "user")
-//            board.moveDirection(dir: "east")
             updateTiles(board: board, labelArray: labelArray, size: size)
         }
         // If user wins, display winning text

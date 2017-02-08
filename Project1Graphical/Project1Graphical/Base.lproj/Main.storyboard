@@ -734,9 +734,6 @@
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
-                                <connections>
-                                    <action selector="sizeCount:" target="XfG-lQ-9wD" id="qD2-Tn-5bA"/>
-                                </connections>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="k9U-d1-4fM">
                                 <rect key="frame" x="387" y="251" width="69" height="17"/>
@@ -751,10 +748,10 @@
                                 <buttonCell key="cell" type="push" title="New Game" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="sFP-Mj-Sjt">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
-                                    <connections>
-                                        <action selector="newGame:" target="XfG-lQ-9wD" id="kaZ-Ng-VC2"/>
-                                    </connections>
                                 </buttonCell>
+                                <connections>
+                                    <action selector="newGame:" target="XfG-lQ-9wD" id="qVj-md-DXU"/>
+                                </connections>
                             </button>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EEG-Yq-fsS">
                                 <rect key="frame" x="375" y="10" width="48" height="17"/>
@@ -785,6 +782,17 @@
                                     <action selector="breadthFirstSearch:" target="XfG-lQ-9wD" id="O1b-MH-ozy"/>
                                 </connections>
                             </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zll-fD-4Ug">
+                                <rect key="frame" x="393" y="198" width="58" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Go" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="biM-LJ-HCB">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="sizeCount:" target="XfG-lQ-9wD" id="GM1-8U-cek"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="EEG-Yq-fsS" firstAttribute="bottom" secondItem="q2w-ND-Jq4" secondAttribute="bottom" id="17D-Ia-zf5"/>
@@ -812,6 +820,7 @@
                     <connections>
                         <outlet property="gridView" destination="eAq-3G-abf" id="mHZ-BL-hZm"/>
                         <outlet property="moveCounter" destination="bS3-Pg-yhH" id="VMw-Tl-N6u"/>
+                        <outlet property="newButton" destination="WOv-hW-NPk" id="JZf-eI-Xrw"/>
                         <outlet property="sizeText" destination="f3c-4J-Jb5" id="bIx-gU-0GN"/>
                         <outlet property="winText" destination="xRm-jA-ih5" id="GON-hF-Pco"/>
                     </connections>

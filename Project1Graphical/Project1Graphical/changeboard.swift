@@ -10,23 +10,26 @@ import Cocoa
 
 
 
+
 func updateTiles(board: Board, labelArray : [[NSButton]], size: Int)
 {
-
-    for i in 0..<size
-    {
-        for j in 0..<size
+//    delay(1)
+//    {
+        for i in 0..<size
         {
-            //Fill a blank for 0
-            if(board.gameBoard[i][j] == 0)
+            for j in 0..<size
             {
-                labelArray[i][j].title = "⬛️"
-            }
-            //Fill numbers
-            else
-            {
-                labelArray[i][j].title = "\(board.gameBoard[i][j])"
+                //Fill a blank for 0
+                if(board.gameBoard[i][j] == 0)
+                {
+                    labelArray[i][j].title = "⬛️"
+                }
+                    //Fill numbers
+                else
+                {
+                    labelArray[i][j].title = "\(board.gameBoard[i][j])"
+                }
             }
         }
-    }
+//    }
 }

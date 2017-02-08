@@ -15,16 +15,20 @@ class Board
     var tmpBoard: [[Int]] = Array(repeating: Array(repeating: 0, count: 5), count: 5)
     var blankLoc = (0,0)
     var moveCount = 0
+    var hashVal: Int
     
-    var boardList = [[[Int]]]()
-    var closedList = [[[Int]]]()
+//    var boardList = [[[Int]]]()
+//    var closedList = [[[Int]]]()
+//    var openList = [Board]()
+//    var closedList = [Board]()
     
 //    var children: [[[Int]]]?
-//    var parent: [[Int]]?
+    var parent: Board?
     
     public init(givenSize: Int)
     {
         var num = 0
+        hashVal = 0
         size = givenSize
         let randMoves = 1000*size
         for i in 0..<size
@@ -43,12 +47,19 @@ class Board
             setupBoard(moves: randMoves)
         }
         startingBoard = gameBoard
+        printBoard()
        
     }
-    func getResetBoard()
+    public init(gb: [[Int]], p: Board)
     {
-        gameBoard = startingBoard
+        hashVal = 0
+        gameBoard = gb
+        parent = p
     }
+//    func getResetBoard()
+//    {
+//        gameBoard = startingBoard
+//    }
     // Print board to stdout
     func printBoard()
     {
@@ -88,8 +99,9 @@ class Board
     }
     
     
-    func moveDirection(dir: String)
+    func moveDirection(dir: String) -> Bool
     {
+        var retVal = true
         var loc: (Int, Int)
         tmpBoard = gameBoard
         blankLoc = getLoc(value: 0)
@@ -99,35 +111,66 @@ class Board
             if(blankLoc.0 < size - 1)
             {
                 loc = (blankLoc.0 + 1, blankLoc.1)
-                move(loc: loc, entryMode:"search")
+                if(legalMove(loc: loc))
+                {
+                    move(loc: loc, entryMode:"search")
+                }
+                else
+                {
+                    retVal =  false;
+                }
             }
             break
         case "east":
             if(blankLoc.1 > 0)
             {
                 loc = (blankLoc.0, blankLoc.1 - 1)
-                move(loc: loc, entryMode:"search")
+                if(legalMove(loc: loc))
+                {
+                    move(loc: loc, entryMode:"search")
+                }
+                else
+                {
+                    retVal = false;
+                }
             }
             break
         case "south":
             if(blankLoc.0 > 0)
             {
                 loc = (blankLoc.0 - 1, blankLoc.1)
-                move(loc: loc, entryMode:"search")
+                if(legalMove(loc: loc))
+                {
+                    move(loc: loc, entryMode:"search")
+                }
+                else
+                {
+                    retVal = false;
+                }
             }
             break
         case "west":
             if(blankLoc.1 < size - 1)
             {
                 loc = (blankLoc.0, blankLoc.1 + 1)
-                move(loc: loc, entryMode:"search")
+                if(legalMove(loc: loc))
+                {
+                    move(loc: loc, entryMode:"search")
+                }
+                else
+                {
+                    retVal =  false;
+                }
             }
             break
         default:
+            retVal = false
             break
         }
-        
+        return retVal
     }
+    
+    
     
     
     func move(loc: (Int,Int), entryMode: String)
@@ -166,7 +209,7 @@ class Board
             let tmp = tmpBoard[tmpBlankLoc.0][tmpBlankLoc.1]
             tmpBoard[tmpBlankLoc.0][tmpBlankLoc.1] = tmpBoard[loc.0][loc.1]
             tmpBoard[loc.0][loc.1] = tmp
-            boardList.append(tmpBoard)
+//            boardList.append(tmpBoard)
 
         }
         else
@@ -243,15 +286,15 @@ class Board
     }
   
     
-    func checkBoardsEqual() -> Bool
+    func checkBoardsEqual(cl: [Board]) -> Bool
     {
-        if(closedList.count == 0)
+        if(cl.count == 0)
         {
             return false
         }
     
         var flag = true
-        for i in 0..<closedList.count
+        for i in 0..<cl.count
         {
             flag = true
             for j in 0..<size
@@ -259,7 +302,7 @@ class Board
                 for k in 0..<size
                 {
 //                    print("\(gameBoard[j][k]), \(closedList[i][j][k])")
-                    if(gameBoard[j][k] != closedList[i][j][k])
+                    if(gameBoard[j][k] != cl[i].gameBoard[j][k])
                     {
                         flag = false
                     }
@@ -277,7 +320,7 @@ class Board
         }
         if(flag == true)
         {
-            print("Equal Boards")
+//            print("Equal Boards")
         }
         return flag
     }
@@ -304,5 +347,29 @@ class Board
     func getMoveCount() -> Int
     {
         return moveCount
+    }
+    
+    func hashThree(hashVals: [Int]) -> Bool
+    {
+        var count = 0
+        for i in 0..<size
+        {
+            for j in 0..<size
+            {
+                hashVal += gameBoard[i][j] * Int(pow(Double(10), Double(count)))
+                count += 1
+//                 print(hashVal)
+            }
+        }
+//        printBoard()
+//        print(hashVal)
+        if(hashVals.contains(hashVal))
+        {
+            return true
+        }
+        else
+        {
+            return false
+        }
     }
 }
