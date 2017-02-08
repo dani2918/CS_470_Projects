@@ -349,6 +349,8 @@ class Board
         return moveCount
     }
     
+    
+    //Creates a value based on the board for a 3x3
     func hashThree(hashVals: [Int]) -> Bool
     {
         var count = 0
