@@ -37,13 +37,14 @@ class ViewController: NSViewController
     // Begin a new game
     @IBAction func newGame(_ sender: NSButton)
     {
+        board = Board(givenSize: size)
         bfsButton.isEnabled = true
         board.setupBoard(moves: 1000*size)
         updateTiles(board: board, labelArray: labelArray, size: size)
         winText.isHidden = true
+        board.moveCount = 0
         let mc = board.getMoveCount()
         moveCounter.stringValue = String(mc)
-        
     }
     
     

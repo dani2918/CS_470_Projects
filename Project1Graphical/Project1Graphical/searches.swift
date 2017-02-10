@@ -118,7 +118,7 @@ class BFS
         
         // Insert the parents of the solution to the list of 
         // moves that solve the initial state
-        var count = 1
+        var count = 0 
         while (board.parent != nil)
         {
             movesList.insert(board, at: movesList.startIndex)
