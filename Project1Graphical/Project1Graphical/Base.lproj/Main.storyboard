@@ -818,6 +818,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="bfsButton" destination="Ac2-an-WfD" id="nCn-Ry-ud0"/>
                         <outlet property="gridView" destination="eAq-3G-abf" id="mHZ-BL-hZm"/>
                         <outlet property="moveCounter" destination="bS3-Pg-yhH" id="VMw-Tl-N6u"/>
                         <outlet property="newButton" destination="WOv-hW-NPk" id="JZf-eI-Xrw"/>

@@ -25,49 +25,55 @@ class BFS
     var head: Board
     var board: Board
     var parent: Board?
+//    var closedListHashed = [Int]()
     
-    var closedListHashed = [Int]()
+    var closedListBool = [Int]()
+    
     
     init(start: Board)
     {
         head = start
         board = head
+        solvedBoard = start
+        openList = []
+        closedListBool = []
+        movesList = []
         //board.gameBoard = [[3,1,2],[0,4,5],[6,7,8]]
-//        board.boardList.append(board.gameBoard)
+        //  board.boardList.append(board.gameBoard)
         
         openList.append(start)
         closedList = []
-        closedListHashed = []
-        solvedBoard = start
+        
+        
+        
+        
     }
     
     func solve() -> [Board]
     {
+        let maxInt = 999999999
+        closedListBool = Array(repeating: 0, count: maxInt)
+        movesList = []
+        var closedListCount = 0
         let start = NSDate()
-        board.printBoard()
+        
+        // Swift construct for do-while
         repeat
         {
+            // Pop the boards off the open list until we find
+            // one NOT on the closed list
             repeat
             {
-//                board.gameBoard = board.boardList.first!
-                
                 board = openList.first!
-                
-//              board.boardList.removeFirst()
                 
                 openList.removeFirst()
                 
-                //        print("Game Board \(board.gameBoard)")
-                //        print("Open List \(board.boardList)")
-                //        print("Closed List \(board.closedList)")
-                
-            }while (board.hashThree(hashVals: closedListHashed))
-//                while (board.checkBoardsEqual(cl: closedList))
+            }while (board.hashThree(hashVals: closedListBool))
+
+            closedListBool[board.hashVal] = 1
+            closedListCount += 1
             
-            
-            closedList.append(board)
-            closedListHashed.append(board.hashVal)
-            
+            // Add moves for N,S,E,W to the list, if they're legal
             if(board.moveDirection(dir: "north"))
             {
                 let northBoard = Board(gb: board.tmpBoard, p: board)
@@ -89,39 +95,46 @@ class BFS
                 openList.append(westBoard)
             }
             
-            if(closedList.count % 250 == 0)
+            
+            // Information that prints to console to let you see the progress of the algorithm.
+            // Mostly useful for debugging purposes, but also interesting
+            if(closedListCount % 250 == 0)
             {
-                print("\nClosed list size: \(closedList.count)")
+                print("\nClosed list size: \(closedListCount)")
+                
+                // Prints time since search started
                 let end = NSDate()
                 let timeSince: Double = end.timeIntervalSince(start as Date)
-                let time = String(format: "%.01f", timeSince/60.0)
-                print("\(time) minutes\n")
+                let time = String(format: "%.02f", timeSince)
+                print("\(time) seconds\n")
             }
             if(openList.count % 500 == 0)
             {
                 print("Open list size: \(openList.count)")
             }
-            
-            
-            //        print("\n\n\n")
-//        board.printBoard()
+          // Keep going until we find a solved board
         } while(!board.checkBoard())
         solvedBoard = board
         
+        // Insert the parents of the solution to the list of 
+        // moves that solve the initial state
+        var count = 1
         while (board.parent != nil)
         {
-//            movesList.append(board)
             movesList.insert(board, at: movesList.startIndex)
             board = board.parent!
-           
+            count += 1
         }
-        print("Closed List Size: \(closedList.count)")
-//        print("MOVES\n\n")
-//        for i in 0..<movesList.count
-//        {
-//            
-//            movesList[i].printBoard()
-//        }
+        
+        // Print some final statistics
+        print("Closed List Size: \(closedListCount)")
+        let end = NSDate()
+        let timeSince: Double = end.timeIntervalSince(start as Date)
+        let time = String(format: "%.02f", timeSince)
+        print("\(time) seconds\n")
+        print("Moves: \(count)")
+
+        closedListBool.removeAll()
         return movesList
     }
     func getBoard() -> Board

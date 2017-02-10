@@ -16,13 +16,8 @@ class Board
     var blankLoc = (0,0)
     var moveCount = 0
     var hashVal: Int
-    
-//    var boardList = [[[Int]]]()
-//    var closedList = [[[Int]]]()
-//    var openList = [Board]()
-//    var closedList = [Board]()
-    
-//    var children: [[[Int]]]?
+
+    // Optional parent of type board (doesn't need initalized)
     var parent: Board?
     
     public init(givenSize: Int)
@@ -56,10 +51,8 @@ class Board
         gameBoard = gb
         parent = p
     }
-//    func getResetBoard()
-//    {
-//        gameBoard = startingBoard
-//    }
+
+    
     // Print board to stdout
     func printBoard()
     {
@@ -98,7 +91,8 @@ class Board
         move(loc: (Int(arc4random_uniform(UInt32(size))),Int(arc4random_uniform(UInt32(size)))), entryMode: "random")
     }
     
-    
+    // Get a temporary board corresponding to a move in a certain direction
+    // Otherwise return false
     func moveDirection(dir: String) -> Bool
     {
         var retVal = true
@@ -203,14 +197,15 @@ class Board
             }
             
         }
+            
+        // If we're returning a board for a BFS, DFS, etc.
+        // DON'T change the game board, change a temp board instead
         else if(legalMove(loc: loc) && entryMode == "search")
         {
             let tmpBlankLoc = getLoc(value: 0)
             let tmp = tmpBoard[tmpBlankLoc.0][tmpBlankLoc.1]
             tmpBoard[tmpBlankLoc.0][tmpBlankLoc.1] = tmpBoard[loc.0][loc.1]
             tmpBoard[loc.0][loc.1] = tmp
-//            boardList.append(tmpBoard)
-
         }
         else
         {
@@ -276,54 +271,53 @@ class Board
                 }
                 checkNumFirst += 1
                 checkNumLast += 1
-                
-                
+
             }
         }
-        
 //      print("BOARD SOLVED")
         return true
     }
   
-    
-    func checkBoardsEqual(cl: [Board]) -> Bool
-    {
-        if(cl.count == 0)
-        {
-            return false
-        }
-    
-        var flag = true
-        for i in 0..<cl.count
-        {
-            flag = true
-            for j in 0..<size
-            {
-                for k in 0..<size
-                {
-//                    print("\(gameBoard[j][k]), \(closedList[i][j][k])")
-                    if(gameBoard[j][k] != cl[i].gameBoard[j][k])
-                    {
-                        flag = false
-                    }
-                }
-                
-            }
-            if(flag == true)
-            {
-//                print("***********")
-//                print("Equal Boards")
-//                printBoard()
-//                print("***********")
-                return true
-            }
-        }
-        if(flag == true)
-        {
-//            print("Equal Boards")
-        }
-        return flag
-    }
+    // See if two boards are equal
+    // CURRENTLY NOT IN USE, NEEDED FOR 4x4, 5x5 SEARCHING
+//    func checkBoardsEqual(cl: [Board]) -> Bool
+//    {
+//        if(cl.count == 0)
+//        {
+//            return false
+//        }
+//    
+//        var flag = true
+//        for i in 0..<cl.count
+//        {
+//            flag = true
+//            for j in 0..<size
+//            {
+//                for k in 0..<size
+//                {
+////                    print("\(gameBoard[j][k]), \(closedList[i][j][k])")
+//                    if(gameBoard[j][k] != cl[i].gameBoard[j][k])
+//                    {
+//                        flag = false
+//                    }
+//                }
+//                
+//            }
+//            if(flag == true)
+//            {
+////                print("***********")
+////                print("Equal Boards")
+////                printBoard()
+////                print("***********")
+//                return true
+//            }
+//        }
+//        if(flag == true)
+//        {
+////            print("Equal Boards")
+//        }
+//        return flag
+//    }
     
     // Return the (x,y) position of a certain numbered square
     func getLoc(value: Int) -> (Int, Int)
@@ -353,6 +347,7 @@ class Board
     //Creates a value based on the board for a 3x3
     func hashThree(hashVals: [Int]) -> Bool
     {
+        hashVal = 0
         var count = 0
         for i in 0..<size
         {
@@ -360,12 +355,19 @@ class Board
             {
                 hashVal += gameBoard[i][j] * Int(pow(Double(10), Double(count)))
                 count += 1
-//                 print(hashVal)
             }
         }
 //        printBoard()
 //        print(hashVal)
-        if(hashVals.contains(hashVal))
+//        if(hashVals.contains(hashVal))
+//        {
+//            return true
+//        }
+//        else
+//        {
+//            return false
+//        }
+        if(hashVals[hashVal] == 1)
         {
             return true
         }
@@ -373,5 +375,6 @@ class Board
         {
             return false
         }
+        
     }
 }

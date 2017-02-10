@@ -20,6 +20,7 @@ class ViewController: NSViewController
     @IBOutlet weak var sizeText: NSTextField!
     @IBOutlet weak var moveCounter: NSTextField!
     @IBOutlet weak var newButton: NSButton!
+    @IBOutlet weak var bfsButton: NSButton!
 
    
     var board = getBoard()
@@ -33,9 +34,10 @@ class ViewController: NSViewController
             deadline: DispatchTime.now() + Double(Int64(delay * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: closure)
     }
    
+    // Begin a new game
     @IBAction func newGame(_ sender: NSButton)
     {
-//        print("NEWGAME")
+        bfsButton.isEnabled = true
         board.setupBoard(moves: 1000*size)
         updateTiles(board: board, labelArray: labelArray, size: size)
         winText.isHidden = true
@@ -51,7 +53,6 @@ class ViewController: NSViewController
     // Set up board with new dimensions between 3x3 and 5x5
     @IBAction func sizeCount(_ sender: NSButton)
     {
-//        print(sender.title)
         if let testSize = Int(sizeText.stringValue)
         {
             if(testSize >= 3 && testSize <= 5)
@@ -74,8 +75,10 @@ class ViewController: NSViewController
     }
    
     
+    // Initiate a BFS
     @IBAction func breadthFirstSearch(_ sender: Any)
     {
+        bfsButton.isEnabled = false
         let bfs = BFS(start: board)
         board = bfs.board
         updateTiles(board: board, labelArray: labelArray, size: size)
@@ -84,9 +87,9 @@ class ViewController: NSViewController
         print("SOLVED")
         for i in 0..<movesList.count
         {
-        //board = bfs.getSolvedBoard()
-//            movesList[i].printBoard()
-            let delayTime = Double(i + 1)
+            // Delay for animated board 
+            // Show the moves on the console and application
+            let delayTime = Double(i) + 1.0
             delay(delayTime)
             {
                 updateTiles(board: movesList[i], labelArray: self.labelArray, size: self.size)
@@ -108,7 +111,8 @@ class ViewController: NSViewController
     }
    
     
-    override func viewDidLoad() {
+    override func viewDidLoad()
+    {
         super.viewDidLoad()
         setupGrid()
         winText.isHidden = true
@@ -158,8 +162,6 @@ class ViewController: NSViewController
     
     func clickOnTile(sender: NSButton)
     {
-//        board.boardList.append(board.gameBoard)
-//        print(board.boardList[0])
         
         if(!board.checkBoard())
         {
@@ -172,13 +174,11 @@ class ViewController: NSViewController
         {
             winText.isHidden = false
         }
+        // Show the number of moves used
         let mc = board.getMoveCount()
         moveCounter.stringValue = String(mc)
         
-//        if(board.checkBoardsEqual())
-//        {
-//            print("EQUAL")
-//        }
+
     }
     
 

@@ -105,13 +105,13 @@
 		9FA291BF1E40143400CC5CD2 /* Project1Graphical */ = {
 			isa = PBXGroup;
 			children = (
+				9F684EE21E41612D001FA0DA /* user.swift */,
+				9F684EE61E41622B001FA0DA /* changeboard.swift */,
 				9FA291C01E40143400CC5CD2 /* AppDelegate.swift */,
 				9F684EE11E41612D001FA0DA /* initalize.swift */,
 				9F684EE01E41612D001FA0DA /* board.swift */,
 				9FA972B01E4942D800FCBCE4 /* searches.swift */,
-				9F684EE21E41612D001FA0DA /* user.swift */,
 				9FA291C21E40143400CC5CD2 /* ViewController.swift */,
-				9F684EE61E41622B001FA0DA /* changeboard.swift */,
 				9FA291C41E40143400CC5CD2 /* Assets.xcassets */,
 				9FA291C61E40143400CC5CD2 /* Main.storyboard */,
 				9FA291C91E40143400CC5CD2 /* Info.plist */,

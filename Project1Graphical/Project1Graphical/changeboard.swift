@@ -13,8 +13,7 @@ import Cocoa
 
 func updateTiles(board: Board, labelArray : [[NSButton]], size: Int)
 {
-//    delay(1)
-//    {
+
         for i in 0..<size
         {
             for j in 0..<size
@@ -31,5 +30,4 @@ func updateTiles(board: Board, labelArray : [[NSButton]], size: Int)
                 }
             }
         }
-//    }
 }
