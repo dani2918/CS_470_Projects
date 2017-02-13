@@ -21,6 +21,7 @@ class ViewController: NSViewController
     @IBOutlet weak var moveCounter: NSTextField!
     @IBOutlet weak var newButton: NSButton!
     @IBOutlet weak var bfsButton: NSButton!
+    @IBOutlet weak var closedList: NSButton!
 
    
     var board = getBoard()
@@ -82,9 +83,10 @@ class ViewController: NSViewController
         bfsButton.isEnabled = false
         let bfs = BFS(start: board)
         board = bfs.board
+        print("size is \(size)")
         updateTiles(board: board, labelArray: labelArray, size: size)
         var movesList = [Board]()
-        movesList = bfs.solve()
+        movesList = bfs.solve(useClosedList: closedList.state == NSOnState)
         print("SOLVED")
         for i in 0..<movesList.count
         {

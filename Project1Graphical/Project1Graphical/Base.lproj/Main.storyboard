@@ -793,6 +793,13 @@
                                     <action selector="sizeCount:" target="XfG-lQ-9wD" id="GM1-8U-cek"/>
                                 </connections>
                             </button>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="fqs-vF-DSK">
+                                <rect key="frame" x="9" y="63" width="90" height="18"/>
+                                <buttonCell key="cell" type="check" title="Closed List" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="gxQ-sy-yeo">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="EEG-Yq-fsS" firstAttribute="bottom" secondItem="q2w-ND-Jq4" secondAttribute="bottom" id="17D-Ia-zf5"/>
@@ -803,6 +810,7 @@
                             <constraint firstItem="q2w-ND-Jq4" firstAttribute="centerX" secondItem="m2S-Jp-Qdl" secondAttribute="centerX" id="K7M-AL-YPM"/>
                             <constraint firstItem="Ac2-an-WfD" firstAttribute="trailing" secondItem="WOv-hW-NPk" secondAttribute="trailing" id="KoA-i0-Qdq"/>
                             <constraint firstItem="q2w-ND-Jq4" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="10" id="Kyx-pL-O2x"/>
+                            <constraint firstItem="fqs-vF-DSK" firstAttribute="top" secondItem="Ac2-an-WfD" secondAttribute="bottom" constant="8" id="LWK-oy-acJ"/>
                             <constraint firstItem="Ac2-an-WfD" firstAttribute="top" secondItem="xRm-jA-ih5" secondAttribute="bottom" constant="14" id="Oye-qv-qLr"/>
                             <constraint firstItem="f3c-4J-Jb5" firstAttribute="top" secondItem="k9U-d1-4fM" secondAttribute="bottom" constant="1" id="Pmz-T7-yO6"/>
                             <constraint firstItem="q2w-ND-Jq4" firstAttribute="centerY" secondItem="m2S-Jp-Qdl" secondAttribute="centerY" id="RF7-r8-Q8Z"/>
@@ -812,6 +820,7 @@
                             <constraint firstItem="bS3-Pg-yhH" firstAttribute="baseline" secondItem="EEG-Yq-fsS" secondAttribute="baseline" id="ej8-br-sH0"/>
                             <constraint firstItem="xRm-jA-ih5" firstAttribute="centerX" secondItem="q2w-ND-Jq4" secondAttribute="centerX" id="jwf-hi-H1x"/>
                             <constraint firstAttribute="trailing" secondItem="bS3-Pg-yhH" secondAttribute="trailing" constant="20" symbolic="YES" id="kQg-at-AH7"/>
+                            <constraint firstItem="fqs-vF-DSK" firstAttribute="centerX" secondItem="Ac2-an-WfD" secondAttribute="centerX" id="oaS-Rf-7pv"/>
                             <constraint firstItem="WOv-hW-NPk" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="20" id="t7k-pR-b3J"/>
                             <constraint firstItem="q2w-ND-Jq4" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="115" id="xJz-Xw-uqj"/>
                             <constraint firstItem="q2w-ND-Jq4" firstAttribute="leading" secondItem="WOv-hW-NPk" secondAttribute="trailing" constant="14" id="yhF-CW-lv7"/>
@@ -819,6 +828,7 @@
                     </view>
                     <connections>
                         <outlet property="bfsButton" destination="Ac2-an-WfD" id="nCn-Ry-ud0"/>
+                        <outlet property="closedList" destination="fqs-vF-DSK" id="mVO-1q-FSy"/>
                         <outlet property="gridView" destination="eAq-3G-abf" id="mHZ-BL-hZm"/>
                         <outlet property="moveCounter" destination="bS3-Pg-yhH" id="VMw-Tl-N6u"/>
                         <outlet property="newButton" destination="WOv-hW-NPk" id="JZf-eI-Xrw"/>

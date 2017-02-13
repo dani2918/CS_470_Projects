@@ -9,7 +9,7 @@ import Foundation
 
 class Board
 {
-    var size = 3
+    var size : Int
     var gameBoard: [[Int]] = Array(repeating: Array(repeating: 0, count: 5), count: 5)
     var startingBoard: [[Int]] = Array(repeating: Array(repeating: 0, count: 5), count: 5)
     var tmpBoard: [[Int]] = Array(repeating: Array(repeating: 0, count: 5), count: 5)
@@ -50,6 +50,7 @@ class Board
         hashVal = 0
         gameBoard = gb
         parent = p
+        size = p.size
     }
 
     
@@ -278,46 +279,72 @@ class Board
         return true
     }
   
-    // See if two boards are equal
-    // CURRENTLY NOT IN USE, NEEDED FOR 4x4, 5x5 SEARCHING
-//    func checkBoardsEqual(cl: [Board]) -> Bool
-//    {
-//        if(cl.count == 0)
-//        {
-//            return false
-//        }
-//    
-//        var flag = true
-//        for i in 0..<cl.count
-//        {
-//            flag = true
-//            for j in 0..<size
-//            {
-//                for k in 0..<size
-//                {
-////                    print("\(gameBoard[j][k]), \(closedList[i][j][k])")
-//                    if(gameBoard[j][k] != cl[i].gameBoard[j][k])
-//                    {
-//                        flag = false
-//                    }
-//                }
-//                
-//            }
-//            if(flag == true)
-//            {
-////                print("***********")
-////                print("Equal Boards")
-////                printBoard()
-////                print("***********")
-//                return true
-//            }
-//        }
-//        if(flag == true)
-//        {
-////            print("Equal Boards")
-//        }
-//        return flag
-//    }
+//     See if two boards are equal
+    func checkBoardsEqual(cl: [[[Int]]]) -> Bool
+    {
+        if(cl.count == 0)
+        {
+            return false
+        }
+    
+        var flag = true
+        for i in 0..<cl.count
+        {
+            flag = true
+            for j in 0..<size
+            {
+                for k in 0..<size
+                {
+//                    print("\(gameBoard[j][k]), \(closedList[i][j][k])")
+                    if(gameBoard[j][k] != cl[i][j][k])
+                    {
+                        flag = false
+                    }
+                }
+                
+            }
+            if(flag == true)
+            {
+//                print("***********")
+//                print("Equal Boards")
+//                printBoard()
+//                print("***********")
+                return true
+            }
+        }
+        if(flag == true)
+        {
+//            print("Equal Boards")
+        }
+        return flag
+    }
+    
+    // Returns true if parent == tmp boards
+    func checkEqualToParent(newBoard: Board) -> Bool
+    {
+        if(newBoard.parent == nil)
+        {
+            return false
+        }
+        
+        var flag = true
+        for i in 0..<newBoard.size 
+        {
+            for j in 0..<newBoard.size
+            {
+                if(newBoard.gameBoard[i][j] != parent?.gameBoard[i][j])
+                {
+                    flag = false
+                }
+                
+            }
+        }
+        if(flag)
+        {
+//            print("Same as Parent!")
+        }
+        return flag
+    }
     
     // Return the (x,y) position of a certain numbered square
     func getLoc(value: Int) -> (Int, Int)
@@ -344,22 +371,30 @@ class Board
     }
     
     
-    //Creates a value based on the board for a 3x3
-    func hashThree(hashVals: [Int]) -> Bool
-    {
-        hashVal = 0
-        var count = 0
-        for i in 0..<size
-        {
-            for j in 0..<size
-            {
-                hashVal += gameBoard[i][j] * Int(pow(Double(10), Double(count)))
-                count += 1
-            }
-        }
-//        printBoard()
-//        print(hashVal)
-//        if(hashVals.contains(hashVal))
+//    //Creates a value based on the board for a 3x3
+//    func hashThree(hashVals: [Int]) -> Bool
+//    {
+//        hashVal = 0
+//        var count = 0
+//        for i in 0..<size
+//        {
+//            for j in 0..<size
+//            {
+//                hashVal += gameBoard[i][j] * Int(pow(Double(10), Double(count)))
+//                count += 1
+//            }
+//        }
+////        printBoard()
+////        print(hashVal)
+////        if(hashVals.contains(hashVal))
+////        {
+////            return true
+////        }
+////        else
+////        {
+////            return false
+////        }
+//        if(hashVals[hashVal] == 1)
 //        {
 //            return true
 //        }
@@ -367,7 +402,36 @@ class Board
 //        {
 //            return false
 //        }
-        if(hashVals[hashVal] == 1)
+//        
+//    }
+    
+    func hash(hashVals: [[[[Int]]]], modSize: Int) -> Bool
+    {
+        hashVal = 0
+        var count = 0
+        
+        //Include only the 3x3 values in the hash function
+        // Speeds up the 4x4 hashing considerably
+        for i in 0..<3
+        {
+            for j in 0..<3
+            {
+                hashVal += gameBoard[i][j] * Int(pow(Double(10), Double(count)))
+                count += 1
+            }
+        }
+        hashVal = hashVal % modSize
+        //        printBoard()
+        //        print(hashVal)
+        //        if(hashVals.contains(hashVal))
+        //        {
+        //            return true
+        //        }
+        //        else
+        //        {
+        //            return false
+        //        }
+        if(checkBoardsEqual(cl: hashVals[hashVal]))
         {
             return true
         }
