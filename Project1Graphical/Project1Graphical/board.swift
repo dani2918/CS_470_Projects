@@ -115,6 +115,10 @@ class Board
                     retVal =  false;
                 }
             }
+            else
+            {
+                retVal = false
+            }
             break
         case "east":
             if(blankLoc.1 > 0)
@@ -128,6 +132,10 @@ class Board
                 {
                     retVal = false;
                 }
+            }
+            else
+            {
+                retVal = false
             }
             break
         case "south":
@@ -143,6 +151,10 @@ class Board
                     retVal = false;
                 }
             }
+            else
+            {
+                retVal = false
+            }
             break
         case "west":
             if(blankLoc.1 < size - 1)
@@ -156,6 +168,10 @@ class Board
                 {
                     retVal =  false;
                 }
+            }
+            else
+            {
+                retVal = false
             }
             break
         default:
@@ -320,19 +336,19 @@ class Board
     }
     
     // Returns true if parent == tmp boards
-    func checkEqualToParent(newBoard: Board) -> Bool
+    func checkEqualToParent() -> Bool
     {
-        if(newBoard.parent == nil)
+        if(parent == nil)
         {
             return false
         }
         
         var flag = true
-        for i in 0..<newBoard.size 
+        for i in 0..<size
         {
-            for j in 0..<newBoard.size
+            for j in 0..<size
             {
-                if(newBoard.gameBoard[i][j] != parent?.gameBoard[i][j])
+                if(tmpBoard[i][j] != parent?.gameBoard[i][j])
                 {
                     flag = false
                 }

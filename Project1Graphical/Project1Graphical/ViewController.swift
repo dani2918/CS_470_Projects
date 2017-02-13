@@ -21,6 +21,7 @@ class ViewController: NSViewController
     @IBOutlet weak var moveCounter: NSTextField!
     @IBOutlet weak var newButton: NSButton!
     @IBOutlet weak var bfsButton: NSButton!
+    @IBOutlet weak var dfsButton: NSButton!
     @IBOutlet weak var closedList: NSButton!
 
    
@@ -40,6 +41,7 @@ class ViewController: NSViewController
     {
         board = Board(givenSize: size)
         bfsButton.isEnabled = true
+        dfsButton.isEnabled = true
         board.setupBoard(moves: 1000*size)
         updateTiles(board: board, labelArray: labelArray, size: size)
         winText.isHidden = true
@@ -81,6 +83,7 @@ class ViewController: NSViewController
     @IBAction func breadthFirstSearch(_ sender: Any)
     {
         bfsButton.isEnabled = false
+        dfsButton.isEnabled = false
         let bfs = BFS(start: board)
         board = bfs.board
         print("size is \(size)")
@@ -111,6 +114,20 @@ class ViewController: NSViewController
             }
             
         }
+    }
+    
+    // Initiate a DFS
+    @IBAction func depthFirstSearch(_ sender: NSButton)
+    {
+        dfsButton.isEnabled = false
+        bfsButton.isEnabled = false
+        let dfs = DFS(start: board)
+        board = dfs.board
+        print("size is \(size)")
+        updateTiles(board: board, labelArray: labelArray, size: size)
+        var movesList = [Board]()
+//        movesList = dfs.solve(useClosedList: closedList.state == NSOnState)
+        print("SOLVED")
     }
    
     

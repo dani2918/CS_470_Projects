@@ -14,7 +14,7 @@ import Foundation
 class DFS
 {
     var openList = [Board]()
-    //    var closedList = [[[Int]]]()
+    var closedList = [[[[Int]]]]()
     var movesList = [Board]()
     var solvedBoard: Board
     var head: Board
@@ -23,7 +23,6 @@ class DFS
     var modSize: Int
     //    var closedListHashed = [Int]()
     
-    var closedListBool = [Int]()
     
     
     init(start: Board)
@@ -34,15 +33,51 @@ class DFS
         
         solvedBoard = start
         openList = []
-        closedListBool = []
         movesList = []
         openList.append(start)
-        
+        closedList = Array(repeating: Array(repeating: [[Int]](), count: 0), count: modSize)
     }
     
+    // Helper for inital call from ViewController
     func startSolve()
     {
+        startSolve(passedBoard: board)
+    }
     
+    func startSolve(passedBoard: Board)
+    {
+        board = passedBoard
+        if(board.checkBoard())
+        {
+            solvedBoard = board
+            
+            // Insert the parents of the solution to the list of
+            // moves that solve the initial state
+            var count = 0
+            while (board.parent != nil)
+            {
+                movesList.insert(board, at: movesList.startIndex)
+                board = board.parent!
+                count += 1
+            }
+            
+            // Print some final statistics
+//            print("Closed List Size: \(closedListCount)")
+//            let end = NSDate()
+//            let timeSince: Double = end.timeIntervalSince(start as Date)
+//            let time = String(format: "%.02f", timeSince)
+//            print("\(time) seconds\n")
+//            print("Moves: \(count)")
+//            
+//            //        closedListBool.removeAll()
+//            closedList.removeAll()
+//            return movesList
+
+        }
+        else
+        {
+            
+        }
     }
     
     func solveR()
@@ -106,8 +141,9 @@ class BFS
                 repeat
                 {
                     board = openList.first!
-                    
                     openList.removeFirst()
+//                    board.printBoard()
+                    
                     
                 // If we're not using a closed list, only pop first elt
                 }while(useClosedList && board.hash(hashVals: closedList, modSize: modSize))
@@ -117,39 +153,41 @@ class BFS
                     closedList[board.hashVal].append(board.gameBoard)
                 }
                 
-            
             closedListCount += 1
             
             // Add moves for N,S,E,W to the list, if they're legal
             if(board.moveDirection(dir: "north"))
             {
-                let northBoard = Board(gb: board.tmpBoard, p: board)
-                if(!board.checkEqualToParent(newBoard: northBoard))
+                if(!board.checkEqualToParent())
                 {
+                    let northBoard = Board(gb: board.tmpBoard, p: board)
                     openList.append(northBoard)
                 }
             }
             if(board.moveDirection(dir: "east"))
             {
-                let eastBoard = Board(gb: board.tmpBoard, p: board)
-                if(!board.checkEqualToParent(newBoard: eastBoard))
+                
+                if(!board.checkEqualToParent())
                 {
+                    let eastBoard = Board(gb: board.tmpBoard, p: board)
                     openList.append(eastBoard)
                 }
             }
             if(board.moveDirection(dir: "south"))
             {
-                let southBoard = Board(gb: board.tmpBoard, p: board)
-                if(!board.checkEqualToParent(newBoard: southBoard))
+                
+                if(!board.checkEqualToParent())
                 {
+                    let southBoard = Board(gb: board.tmpBoard, p: board)
                     openList.append(southBoard)
                 }
             }
             if(board.moveDirection(dir: "west"))
             {
-                let westBoard = Board(gb: board.tmpBoard, p: board)
-                if(!board.checkEqualToParent(newBoard: westBoard))
+                
+                if(!board.checkEqualToParent())
                 {
+                    let westBoard = Board(gb: board.tmpBoard, p: board)
                     openList.append(westBoard)
                 }
             }
