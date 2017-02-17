@@ -16,7 +16,6 @@ import Foundation
 class BFS
 {
     var openList = [Board]()
-//    var closedList = [[[Int]]]()
     var movesList = [Board]()
     var solvedBoard: Board
     var head: Board
@@ -24,7 +23,6 @@ class BFS
     var parent: Board?
     var modSize: Int
     let direction = ["north", "east", "south", "west"]
-//    var closedListHashed = [Int]()
     
     var closedListBool = [Int]()
     
@@ -34,23 +32,15 @@ class BFS
         head = start
         board = head
         modSize = 5000 * Int(pow(Double(10), Double(board.size)))
-        
         solvedBoard = start
         openList = []
         closedListBool = []
         movesList = []
-        //board.gameBoard = [[3,1,2],[0,4,5],[6,7,8]]
-        //  board.boardList.append(board.gameBoard)
-        
         openList.append(start)
-//        closedList = [[[]]]
-        
     }
     
     func solve(useClosedList: Bool) -> [Board]
     {
-//        let maxInt = 999999999
-//        closedListBool = Array(repeating: 0, count: maxInt)
         print("modsize is: \(modSize)")
         print("use closed list is: \(useClosedList)")
         var closedList = Array(repeating: Array(repeating: [[Int]](), count: 0), count: modSize)
@@ -68,8 +58,6 @@ class BFS
                 {
                     board = openList.first!
                     openList.removeFirst()
-//                    board.printBoard()
-                    
                     
                 // If we're not using a closed list, only pop first elt
                 }while(useClosedList && board.hash(hashVals: closedList, modSize: modSize))
@@ -132,8 +120,7 @@ class BFS
         let time = String(format: "%.02f", timeSince)
         print("\(time) seconds\n")
         print("Moves: \(count)")
-
-//        closedListBool.removeAll()
+        
         closedList.removeAll()
         return movesList
     }

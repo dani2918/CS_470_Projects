@@ -21,9 +21,6 @@ class DFS
     var startTime: NSDate
     var solved: Bool
     let direction = ["north", "east", "south", "west"]
-    //    var closedListHashed = [Int]()
-    
-    
     
     init(start: Board)
     {
@@ -41,16 +38,22 @@ class DFS
     }
     
     // Helper for inital call from ViewController
-    func startSolve()
+    func startSolve(itDeep: Bool)
     {
         openList.append(savedBoard)
-        _ = solve()
+        if(!itDeep)
+        {
+            _ = solve()
+        }
+        else
+        {
+            _ = solveItDeep()
+        }
+        
     }
     
     func solve() -> [Board]
     {
-        //        let maxInt = 999999999
-        //        closedListBool = Array(repeating: 0, count: maxInt)
         print("modsize is: \(modSize)")
         //        print("use closed list is: \(useClosedList)")
         var closedList = Array(repeating: Array(repeating: [[Int]](), count: 0), count: modSize)
@@ -68,19 +71,12 @@ class DFS
             {
                 board = openList.first!
                 openList.removeFirst()
-                //                    board.printBoard()
-                
-                
+
                 // If we're not using a closed list, only pop first elt
             }while(board.hash(hashVals: closedList, modSize: modSize))
-            
-            if(true)
-            {
-                closedList[board.hashVal].append(board.gameBoard)
-            }
-            
+
+            closedList[board.hashVal].append(board.gameBoard)
             closedListCount += 1
-            //            board.printBoard()
             
             // Add moves for N,S,E,W to the list, if they're legal
             for dir in direction
@@ -94,8 +90,6 @@ class DFS
                     }
                 }
             }
-            
-            
             
             // Information that prints to console to let you see the progress of the algorithm.
             // Mostly useful for debugging purposes, but also interesting
@@ -139,6 +133,124 @@ class DFS
         print("Depth: \(depth)")
         
         //        closedListBool.removeAll()
+        closedList.removeAll()
+        return movesList
+    }
+    
+    func solveItDeep() -> [Board]
+    {
+        //        let maxInt = 999999999
+        //        closedListBool = Array(repeating: 0, count: maxInt)
+        print("modsize is: \(modSize)")
+        var closedList = Array(repeating: Array(repeating: [[Int]](), count: 0), count: modSize)
+        
+        movesList = []
+        var closedListCount = 0
+        let start = NSDate()
+        var finishedLevel = false
+        var solved = false
+        
+
+        for depthLimit in 0...100
+        {
+//            print("depth is: \(depthLimit)")
+            repeat
+            {
+                // Pop the boards off the open list until we find
+                // one NOT on the closed list
+                repeat
+                {
+                    if(openList.isEmpty)
+                    {
+                        finishedLevel = true
+                        break
+                    }
+                    board = openList.first!
+                    openList.removeFirst()
+                    
+                    // If we're not using a closed list, only pop first elt
+                }while(board.hash(hashVals: closedList, modSize: modSize))
+                
+                if(finishedLevel)
+                {
+                    break
+                }
+
+                closedList[board.hashVal].append(board.gameBoard)
+                closedListCount += 1
+                
+                // Add moves for N,S,E,W to the list, if they're legal
+                for dir in direction
+                {
+                    if(board.moveDirection(dir: dir))
+                    {
+                        if(!board.checkEqualToParent())
+                        {
+                            let newBoard = Board(gb: board.tmpBoard, p: board)
+                            if newBoard.depth <= depthLimit
+                            {
+                                openList.insert(newBoard, at: openList.startIndex)
+                            }
+                        }
+                    }
+                }
+                
+                // Information that prints to console to let you see the progress of the algorithm.
+                // Mostly useful for debugging purposes, but also interesting
+                if(closedListCount % 250 == 0)
+                {
+                    print("\nExamined list size: \(closedListCount)")
+                    print("Depth: \(board.depth)")
+                    
+                    // Prints time since search started
+                    let end = NSDate()
+                    let timeSince: Double = end.timeIntervalSince(start as Date)
+                    let time = String(format: "%.02f", timeSince)
+                    print("\(time) seconds\n")
+                }
+                if(openList.count % 10000 == 0)
+                {
+                    print("Open list size: \(openList.count)")
+                }
+                // Keep going until we find a solved board
+                if(board.checkBoard())
+                {
+                    solved = true
+                    break
+                }
+
+            } while (true)
+            if(solved)
+            {
+                solvedBoard = board
+                break
+            }
+            finishedLevel = false
+            closedList.removeAll()
+            closedList = Array(repeating: Array(repeating: [[Int]](), count: 0), count: modSize)
+            openList.append(savedBoard)
+        }
+//        solvedBoard = board
+        
+        // Insert the parents of the solution to the list of
+        // moves that solve the initial state
+        var count = 0
+        let depth = board.depth
+        while (board.parent != nil)
+        {
+            movesList.insert(board, at: movesList.startIndex)
+            board = board.parent!
+            count += 1
+        }
+        
+        // Print some final statistics
+        print("Closed List Size: \(closedListCount)")
+        let end = NSDate()
+        let timeSince: Double = end.timeIntervalSince(start as Date)
+        let time = String(format: "%.02f", timeSince)
+        print("\(time) seconds\n")
+        print("Moves: \(count)")
+        print("Depth: \(depth)")
         closedList.removeAll()
         return movesList
     }

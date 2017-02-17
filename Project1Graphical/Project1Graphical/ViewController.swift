@@ -26,7 +26,7 @@ class ViewController: NSViewController
     @IBOutlet weak var closedList: NSButton!
     @IBOutlet weak var outOfPlaceButton: NSButton!
     @IBOutlet weak var manhattanButton: NSButton!
-
+    @IBOutlet weak var itDeepButton: NSButton!
    
     var board = getBoard()
     var user = getUser()
@@ -181,31 +181,38 @@ class ViewController: NSViewController
         print("size is \(size)")
         updateTiles(board: board, labelArray: labelArray, size: size)
         var movesList = [Board]()
-        dfs.startSolve()
-        //print("SOLVED")
+        
+        // Check iterative deep. check box
+        if(itDeepButton.state == NSOffState)
+        {
+            dfs.startSolve(itDeep: false)
+        }
+        else
+        {
+            dfs.startSolve(itDeep: true)
+        }
         movesList = dfs.getMovesList()
         for i in 0..<movesList.count
         {
-            // Delay for animated board
-            // Show the moves on the console and application
-//            let delayTime = Double(i) + 1.0
-//            delay(delayTime)
-//            {
-                updateTiles(board: movesList[i], labelArray: self.labelArray, size: self.size)
-//                movesList[i].printBoard()
             
-                self.moveCounter.stringValue = String(i+1)
-                if(i == movesList.count - 1)
+            updateTiles(board: movesList[i], labelArray: self.labelArray, size: self.size)
+            
+            if(itDeepButton.state == NSOnState)
+            {
+                movesList[i].printBoard()
+            }
+            self.moveCounter.stringValue = String(i+1)
+            if(i == movesList.count - 1)
+            {
+                
+                self.board = movesList[movesList.endIndex-1]
+                if(self.board.checkBoard())
                 {
-                    self.board = movesList[movesList.endIndex-1]
-                    if(self.board.checkBoard())
-                    {
-                        movesList[i].printBoard()
-                        self.winText.isHidden = false
-                    }
-                    
+                    movesList[i].printBoard()
+                    self.winText.isHidden = false
                 }
-//            }
+                
+            }
             
         }
 
@@ -218,6 +225,7 @@ class ViewController: NSViewController
         setupGrid()
         winText.isHidden = true
         outOfPlaceButton.state = NSOnState
+        itDeepButton.state = NSOffState
     }
 
     override var representedObject: Any? {
@@ -264,7 +272,6 @@ class ViewController: NSViewController
     
     func clickOnTile(sender: NSButton)
     {
-        
         if(!board.checkBoard())
         {
             // Get tile value or '0' if blank
@@ -285,7 +292,7 @@ class ViewController: NSViewController
     
     @IBAction func radioButtonDidChange(_ sender: NSButton)
     {
-        
+        //Blank function to make radio buttons mutually exclusive
     }
     
 

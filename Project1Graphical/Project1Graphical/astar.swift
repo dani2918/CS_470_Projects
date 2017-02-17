@@ -44,14 +44,10 @@ class AStar
         start.cost = start.calcCost(herusticNo: hn)
         openList.append(start)
         heruisticNo = 1
-        //        closedList = [[[]]]
-        
     }
     
     func solve(hn: Int) -> [Board]
     {
-        //        let maxInt = 999999999
-        //        closedListBool = Array(repeating: 0, count: maxInt)
         print("modsize is: \(modSize)")
         heruisticNo = hn
         var closedList = Array(repeating: Array(repeating: [[Int]](), count: 0), count: modSize)
@@ -59,7 +55,6 @@ class AStar
         movesList = []
         var closedListCount = 0
         let start = NSDate()
-//        print("HN IS: \(hn)")
         
         // Swift construct for do-while
         repeat
@@ -75,14 +70,9 @@ class AStar
             }while(board.hash(hashVals: closedList, modSize: modSize))
             
             closedList[board.hashVal].append(board.gameBoard)
-            
             closedListCount += 1
-//            board.printBoard()
-//            print("cost is: \(board.cost)")
             let depth = board.depth
-            
-            
-            
+
             // Add moves for N,S,E,W to the list, if they're legal
             for dir in direction
             {
@@ -91,8 +81,6 @@ class AStar
                     if(!board.checkEqualToParent())
                     {
                         let newBoard = Board(gb: board.tmpBoard, p: board)
-//                        newBoard.printBoard()
-//                        print(" calc cost is: \(newBoard.calcCost(herusticNo: hn))")
                         newBoard.cost = newBoard.calcCost(herusticNo: hn) + depth + 1 //+ board.cost!
                         let newCost = newBoard.cost
                         if openList.count == 0
@@ -128,9 +116,7 @@ class AStar
                     }
                 }
             }
-            
-            
-            
+
             
             // Information that prints to console to let you see the progress of the algorithm.
             // Mostly useful for debugging purposes, but also interesting
@@ -172,7 +158,6 @@ class AStar
         print("\(time) seconds\n")
         print("Moves: \(count)")
         
-        //        closedListBool.removeAll()
         closedList.removeAll()
         return movesList
     }
@@ -184,6 +169,8 @@ class AStar
     {
         return solvedBoard
     }
+    
+    // Unfinished
 //    func findInsertion(ol: [Board], val: Int) -> Int
 //    {
 //        var found = false

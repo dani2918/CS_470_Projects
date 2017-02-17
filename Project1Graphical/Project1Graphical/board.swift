@@ -324,17 +324,10 @@ class Board
             }
             if(flag == true)
             {
-                //                print("***********")
-                //                print("Equal Boards")
-                //                printBoard()
-                //                print("***********")
                 return true
             }
         }
-        if(flag == true)
-        {
-            //            print("Equal Boards")
-        }
+
         return flag
     }
     
@@ -357,10 +350,6 @@ class Board
                 }
                 
             }
-        }
-        if(flag)
-        {
-            //            print("Same as Parent!")
         }
         return flag
     }
@@ -407,17 +396,6 @@ class Board
             }
         }
         hashVal = hashVal % modSize
-        //        printBoard()
-        //        print(hashVal)
-        //        if(hashVals.contains(hashVal))
-        //        {
-        //            return true
-        //        }
-        //        else
-        //        {
-        //            return false
-        //        }
-        
         if(checkBoardsEqual(cl: hashVals[hashVal]))
         {
             return true
@@ -430,7 +408,7 @@ class Board
     }
     
     
-    
+    // Calculate for both goal states, return the minimum distance
     func calcCost(herusticNo: Int) -> Int
     {
         let m1 = calcOutOfPlace(herusticNo: herusticNo, blankAt: "start")
@@ -438,6 +416,8 @@ class Board
         return min(m1, m2)
     }
     
+    // Function for calcualting both h1 - # tiles out of place
+    // and h2 - Manhat. dist.
     func calcOutOfPlace(herusticNo: Int, blankAt: String) -> Int
     {
         var checkNum = 0
@@ -454,6 +434,7 @@ class Board
         }
         let savecn = checkNum
         
+        // Initalize the correct board for comparison
         for i in 0..<size
         {
             for j in 0..<size
@@ -473,13 +454,11 @@ class Board
         {
             for j in 0..<size
             {
-//                solvedBoard[i][j] = checkNum
                 // Case where the blank is at the end
                 // 1 is first
                 if(i == (size - 1) && j == (size - 1) && blankAt == "end")
                 {
                     checkNum = 0
-//                    solvedBoard[i][j] = checkNum
                 }
                 
                 if(gameBoard[i][j] != checkNum)
@@ -500,13 +479,12 @@ class Board
         }
         else
         {
-//            print("TOT AWAY: \(totDistAway)")
-//            print("\n\n")
             return totDistAway
         }
     }
     
-    
+    // Calculate the Manhattan distance, given a solved board and 
+    // out-of-place tile in the gameboard
     func calcDistAway(checkNum: Int, solvedBoard: [[Int]]) -> Int
     {
         var solvedi = 0
@@ -514,10 +492,8 @@ class Board
         var actuali = 0
         var actualj = 0
         
-//        print("CHECKNUM: \(checkNum)")
         if(checkNum == 0)
         {
-//            print("BLANK")
             return 0
         }
         
@@ -534,7 +510,6 @@ class Board
             }
         }
         let distance = (abs(actuali - solvedi)) + (abs(actualj - solvedj))
-//        print("i: \(actuali) j: \(actualj) distance is: \(distance)")
         return distance
     }
     
