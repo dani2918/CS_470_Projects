@@ -16,14 +16,17 @@ class Board
     var blankLoc = (0,0)
     var moveCount = 0
     var hashVal: Int
-
+    
     // Optional parent of type board (doesn't need initalized)
     var parent: Board?
+    var depth: Int
+    var cost: Int?
     
     public init(givenSize: Int)
     {
         var num = 0
         hashVal = 0
+        depth = 0
         size = givenSize
         let randMoves = 1000*size
         for i in 0..<size
@@ -43,7 +46,7 @@ class Board
         }
         startingBoard = gameBoard
         printBoard()
-       
+        
     }
     public init(gb: [[Int]], p: Board)
     {
@@ -51,8 +54,9 @@ class Board
         gameBoard = gb
         parent = p
         size = p.size
+        depth = p.depth + 1
     }
-
+    
     
     // Print board to stdout
     func printBoard()
@@ -75,7 +79,7 @@ class Board
         }
         print()
     }
-
+    
     // Do a specified # of random moves
     func setupBoard(moves: Int)
     {
@@ -205,7 +209,7 @@ class Board
                 
                 if(checkBoard())
                 {
-                   
+                    
                     print("BOARD SOLVED!")
                     //Only exit on command line
                     //exit(1)
@@ -215,8 +219,8 @@ class Board
             
         }
             
-        // If we're returning a board for a BFS, DFS, etc.
-        // DON'T change the game board, change a temp board instead
+            // If we're returning a board for a BFS, DFS, etc.
+            // DON'T change the game board, change a temp board instead
         else if(legalMove(loc: loc) && entryMode == "search")
         {
             let tmpBlankLoc = getLoc(value: 0)
@@ -288,21 +292,21 @@ class Board
                 }
                 checkNumFirst += 1
                 checkNumLast += 1
-
+                
             }
         }
-//      print("BOARD SOLVED")
+        //      print("BOARD SOLVED")
         return true
     }
-  
-//     See if two boards are equal
+    
+    //     See if two boards are equal
     func checkBoardsEqual(cl: [[[Int]]]) -> Bool
     {
         if(cl.count == 0)
         {
             return false
         }
-    
+        
         var flag = true
         for i in 0..<cl.count
         {
@@ -311,7 +315,6 @@ class Board
             {
                 for k in 0..<size
                 {
-//                    print("\(gameBoard[j][k]), \(closedList[i][j][k])")
                     if(gameBoard[j][k] != cl[i][j][k])
                     {
                         flag = false
@@ -321,16 +324,16 @@ class Board
             }
             if(flag == true)
             {
-//                print("***********")
-//                print("Equal Boards")
-//                printBoard()
-//                print("***********")
+                //                print("***********")
+                //                print("Equal Boards")
+                //                printBoard()
+                //                print("***********")
                 return true
             }
         }
         if(flag == true)
         {
-//            print("Equal Boards")
+            //            print("Equal Boards")
         }
         return flag
     }
@@ -357,7 +360,7 @@ class Board
         }
         if(flag)
         {
-//            print("Same as Parent!")
+            //            print("Same as Parent!")
         }
         return flag
     }
@@ -387,39 +390,6 @@ class Board
     }
     
     
-//    //Creates a value based on the board for a 3x3
-//    func hashThree(hashVals: [Int]) -> Bool
-//    {
-//        hashVal = 0
-//        var count = 0
-//        for i in 0..<size
-//        {
-//            for j in 0..<size
-//            {
-//                hashVal += gameBoard[i][j] * Int(pow(Double(10), Double(count)))
-//                count += 1
-//            }
-//        }
-////        printBoard()
-////        print(hashVal)
-////        if(hashVals.contains(hashVal))
-////        {
-////            return true
-////        }
-////        else
-////        {
-////            return false
-////        }
-//        if(hashVals[hashVal] == 1)
-//        {
-//            return true
-//        }
-//        else
-//        {
-//            return false
-//        }
-//        
-//    }
     
     func hash(hashVals: [[[[Int]]]], modSize: Int) -> Bool
     {
@@ -447,6 +417,7 @@ class Board
         //        {
         //            return false
         //        }
+        
         if(checkBoardsEqual(cl: hashVals[hashVal]))
         {
             return true
@@ -457,4 +428,114 @@ class Board
         }
         
     }
+    
+    
+    
+    func calcCost(herusticNo: Int) -> Int
+    {
+        let m1 = calcOutOfPlace(herusticNo: herusticNo, blankAt: "start")
+        let m2 = calcOutOfPlace(herusticNo: herusticNo, blankAt: "end")
+        return min(m1, m2)
+    }
+    
+    func calcOutOfPlace(herusticNo: Int, blankAt: String) -> Int
+    {
+        var checkNum = 0
+        var solvedBoard: [[Int]] = Array(repeating: Array(repeating: 0, count: 5), count: 5)
+        var numOff = 0
+        var totDistAway = 0
+        if (blankAt == "start")
+        {
+            checkNum = 0
+        }
+        else
+        {
+            checkNum = 1
+        }
+        let savecn = checkNum
+        
+        for i in 0..<size
+        {
+            for j in 0..<size
+            {
+                solvedBoard[i][j] = checkNum
+                if(checkNum == 9)
+                {
+                    solvedBoard[i][j] = 0
+                }
+                checkNum += 1
+            }
+        }
+        checkNum = savecn
+        
+        
+        for i in 0..<size
+        {
+            for j in 0..<size
+            {
+//                solvedBoard[i][j] = checkNum
+                // Case where the blank is at the end
+                // 1 is first
+                if(i == (size - 1) && j == (size - 1) && blankAt == "end")
+                {
+                    checkNum = 0
+//                    solvedBoard[i][j] = checkNum
+                }
+                
+                if(gameBoard[i][j] != checkNum)
+                {
+                    // Don't add the blank to herusitic.
+                    if(gameBoard[i][j] != 0)
+                    {
+                        totDistAway += calcDistAway(checkNum: gameBoard[i][j], solvedBoard: solvedBoard)
+                        numOff += 1
+                    }
+                }
+                checkNum += 1
+            }
+        }
+        if(herusticNo == 1)
+        {
+            return numOff
+        }
+        else
+        {
+//            print("TOT AWAY: \(totDistAway)")
+//            print("\n\n")
+            return totDistAway
+        }
+    }
+    
+    
+    func calcDistAway(checkNum: Int, solvedBoard: [[Int]]) -> Int
+    {
+        var solvedi = 0
+        var solvedj = 0
+        var actuali = 0
+        var actualj = 0
+        
+//        print("CHECKNUM: \(checkNum)")
+        if(checkNum == 0)
+        {
+//            print("BLANK")
+            return 0
+        }
+        
+        (actuali, actualj) = getLoc(value: checkNum)
+        for i in 0..<size
+        {
+            for j in 0..<size
+            {
+                if(solvedBoard[i][j] == checkNum)
+                {
+                    solvedi = i
+                    solvedj = j
+                }
+            }
+        }
+        let distance = (abs(actuali - solvedi)) + (abs(actualj - solvedj))
+//        print("i: \(actuali) j: \(actualj) distance is: \(distance)")
+        return distance
+    }
+    
 }

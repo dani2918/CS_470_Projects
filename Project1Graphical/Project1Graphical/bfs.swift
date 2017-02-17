@@ -11,81 +11,6 @@ import Foundation
 
 
 
-class DFS
-{
-    var openList = [Board]()
-    var closedList = [[[[Int]]]]()
-    var movesList = [Board]()
-    var solvedBoard: Board
-    var head: Board
-    var board: Board
-    var parent: Board?
-    var modSize: Int
-    //    var closedListHashed = [Int]()
-    
-    
-    
-    init(start: Board)
-    {
-        head = start
-        board = head
-        modSize = 5000 * Int(pow(Double(10), Double(board.size)))
-        
-        solvedBoard = start
-        openList = []
-        movesList = []
-        openList.append(start)
-        closedList = Array(repeating: Array(repeating: [[Int]](), count: 0), count: modSize)
-    }
-    
-    // Helper for inital call from ViewController
-    func startSolve()
-    {
-        startSolve(passedBoard: board)
-    }
-    
-    func startSolve(passedBoard: Board)
-    {
-        board = passedBoard
-        if(board.checkBoard())
-        {
-            solvedBoard = board
-            
-            // Insert the parents of the solution to the list of
-            // moves that solve the initial state
-            var count = 0
-            while (board.parent != nil)
-            {
-                movesList.insert(board, at: movesList.startIndex)
-                board = board.parent!
-                count += 1
-            }
-            
-            // Print some final statistics
-//            print("Closed List Size: \(closedListCount)")
-//            let end = NSDate()
-//            let timeSince: Double = end.timeIntervalSince(start as Date)
-//            let time = String(format: "%.02f", timeSince)
-//            print("\(time) seconds\n")
-//            print("Moves: \(count)")
-//            
-//            //        closedListBool.removeAll()
-//            closedList.removeAll()
-//            return movesList
-
-        }
-        else
-        {
-            
-        }
-    }
-    
-    func solveR()
-    {
-        
-    }
-}
-
 
 
 class BFS
@@ -98,6 +23,7 @@ class BFS
     var board: Board
     var parent: Board?
     var modSize: Int
+    let direction = ["north", "east", "south", "west"]
 //    var closedListHashed = [Int]()
     
     var closedListBool = [Int]()
@@ -156,39 +82,15 @@ class BFS
             closedListCount += 1
             
             // Add moves for N,S,E,W to the list, if they're legal
-            if(board.moveDirection(dir: "north"))
+            for dir in direction
             {
-                if(!board.checkEqualToParent())
+                if(board.moveDirection(dir: dir))
                 {
-                    let northBoard = Board(gb: board.tmpBoard, p: board)
-                    openList.append(northBoard)
-                }
-            }
-            if(board.moveDirection(dir: "east"))
-            {
-                
-                if(!board.checkEqualToParent())
-                {
-                    let eastBoard = Board(gb: board.tmpBoard, p: board)
-                    openList.append(eastBoard)
-                }
-            }
-            if(board.moveDirection(dir: "south"))
-            {
-                
-                if(!board.checkEqualToParent())
-                {
-                    let southBoard = Board(gb: board.tmpBoard, p: board)
-                    openList.append(southBoard)
-                }
-            }
-            if(board.moveDirection(dir: "west"))
-            {
-                
-                if(!board.checkEqualToParent())
-                {
-                    let westBoard = Board(gb: board.tmpBoard, p: board)
-                    openList.append(westBoard)
+                    if(!board.checkEqualToParent())
+                    {
+                        let newBoard = Board(gb: board.tmpBoard, p: board)
+                        openList.append(newBoard)
+                    }
                 }
             }
             

@@ -22,7 +22,10 @@ class ViewController: NSViewController
     @IBOutlet weak var newButton: NSButton!
     @IBOutlet weak var bfsButton: NSButton!
     @IBOutlet weak var dfsButton: NSButton!
+    @IBOutlet weak var aStarButton: NSButton!
     @IBOutlet weak var closedList: NSButton!
+    @IBOutlet weak var outOfPlaceButton: NSButton!
+    @IBOutlet weak var manhattanButton: NSButton!
 
    
     var board = getBoard()
@@ -42,6 +45,7 @@ class ViewController: NSViewController
         board = Board(givenSize: size)
         bfsButton.isEnabled = true
         dfsButton.isEnabled = true
+        aStarButton.isEnabled = true
         board.setupBoard(moves: 1000*size)
         updateTiles(board: board, labelArray: labelArray, size: size)
         winText.isHidden = true
@@ -79,9 +83,60 @@ class ViewController: NSViewController
     }
    
     
+    @IBAction func AStarSearch(_ sender: NSButton)
+    {
+        aStarButton.isEnabled = false
+        bfsButton.isEnabled = false
+        dfsButton.isEnabled = false
+        var hn: Int
+        if(outOfPlaceButton.state == NSOnState)
+        {
+            hn = 1
+        }
+        else
+        {
+            hn = 2
+        }
+        let aStar = AStar(start: board, hn: hn)
+        board = aStar.board
+        
+        print("size is \(size)")
+        updateTiles(board: board, labelArray: labelArray, size: size)
+        var movesList = [Board]()
+        
+        movesList = aStar.solve(hn: hn)
+        print("SOLVED")
+        for i in 0..<movesList.count
+        {
+            // Delay for animated board
+            // Show the moves on the console and application
+            let delayTime = Double(i) + 1.0
+            delay(delayTime)
+            {
+                updateTiles(board: movesList[i], labelArray: self.labelArray, size: self.size)
+                movesList[i].printBoard()
+                
+                self.moveCounter.stringValue = String(i+1)
+                if(i == movesList.count - 1)
+                {
+                    self.board = movesList[movesList.endIndex-1]
+                    if(self.board.checkBoard())
+                    {
+                        self.winText.isHidden = false
+                    }
+                    
+                }
+            }
+        }
+
+    }
+    
+    
+    
     // Initiate a BFS
     @IBAction func breadthFirstSearch(_ sender: Any)
     {
+        aStarButton.isEnabled = false
         bfsButton.isEnabled = false
         dfsButton.isEnabled = false
         let bfs = BFS(start: board)
@@ -112,22 +167,48 @@ class ViewController: NSViewController
                     
                 }
             }
-            
         }
     }
     
     // Initiate a DFS
     @IBAction func depthFirstSearch(_ sender: NSButton)
     {
+        aStarButton.isEnabled = false
         dfsButton.isEnabled = false
         bfsButton.isEnabled = false
         let dfs = DFS(start: board)
-        board = dfs.board
+        board = dfs.savedBoard
         print("size is \(size)")
         updateTiles(board: board, labelArray: labelArray, size: size)
         var movesList = [Board]()
-//        movesList = dfs.solve(useClosedList: closedList.state == NSOnState)
-        print("SOLVED")
+        dfs.startSolve()
+        //print("SOLVED")
+        movesList = dfs.getMovesList()
+        for i in 0..<movesList.count
+        {
+            // Delay for animated board
+            // Show the moves on the console and application
+//            let delayTime = Double(i) + 1.0
+//            delay(delayTime)
+//            {
+                updateTiles(board: movesList[i], labelArray: self.labelArray, size: self.size)
+//                movesList[i].printBoard()
+            
+                self.moveCounter.stringValue = String(i+1)
+                if(i == movesList.count - 1)
+                {
+                    self.board = movesList[movesList.endIndex-1]
+                    if(self.board.checkBoard())
+                    {
+                        movesList[i].printBoard()
+                        self.winText.isHidden = false
+                    }
+                    
+                }
+//            }
+            
+        }
+
     }
    
     
@@ -136,6 +217,7 @@ class ViewController: NSViewController
         super.viewDidLoad()
         setupGrid()
         winText.isHidden = true
+        outOfPlaceButton.state = NSOnState
     }
 
     override var representedObject: Any? {
@@ -199,6 +281,11 @@ class ViewController: NSViewController
         moveCounter.stringValue = String(mc)
         
 
+    }
+    
+    @IBAction func radioButtonDidChange(_ sender: NSButton)
+    {
+        
     }
     
 
