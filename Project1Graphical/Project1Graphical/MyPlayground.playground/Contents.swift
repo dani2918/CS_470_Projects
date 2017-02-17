@@ -403,7 +403,6 @@ while(true)
         print(min)
         print(max)
         print(avg)
-        x.insert(val, at: avg )
         break
     }
     else

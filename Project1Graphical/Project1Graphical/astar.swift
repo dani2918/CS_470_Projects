@@ -11,11 +11,6 @@ import Foundation
 class AStar
 {
     var openList = [Board]()
-    
-    
-//    var openList = [[Board]: Int]()
-//    var test = [Int: [Board]]()
-    //    var closedList = [[[Int]]]()
     var movesList = [Board]()
     var solvedBoard: Board
     var head: Board
@@ -24,8 +19,6 @@ class AStar
     var modSize: Int
     var heruisticNo: Int
     let direction = ["north", "east", "south", "west"]
-    //    var closedListHashed = [Int]()
-    
     var closedListBool = [Int]()
     
     
@@ -34,13 +27,10 @@ class AStar
         head = start
         board = head
         modSize = 5000 * Int(pow(Double(10), Double(board.size)))
-        
         solvedBoard = start
         openList = []
         closedListBool = []
         movesList = []
-        //board.gameBoard = [[3,1,2],[0,4,5],[6,7,8]]
-        //  board.boardList.append(board.gameBoard)
         start.cost = start.calcCost(herusticNo: hn)
         openList.append(start)
         heruisticNo = 1
@@ -87,18 +77,22 @@ class AStar
                         {
                             openList.append(newBoard)
                         }
-                            
+//                            openList.sort(by: { $0.cost! > $1.cost! })
                          // TODO: Write a function that finds the index to insert faster
                         else
                         {
-//                            let index = findInsertion(ol: openList, val: newCost!)
-                            for i in 0...openList.count
+                            var index = findInsertion(ol: openList, val: newCost!) - 1
+                            if(index < 0)
+                            {
+                                index = 0
+                            }
+                            for i in index...openList.count
                             {
                                 if(i == openList.count)
                                 {
                                     openList.insert(newBoard, at: i)
                                 }
-                                else if(openList[i].cost! > newCost!)
+                                else if(openList[i].cost! >= newCost!)
                                 {
                                     
                                     if (i == 0)
@@ -116,7 +110,6 @@ class AStar
                     }
                 }
             }
-
             
             // Information that prints to console to let you see the progress of the algorithm.
             // Mostly useful for debugging purposes, but also interesting
@@ -171,23 +164,38 @@ class AStar
     }
     
     // Unfinished
-//    func findInsertion(ol: [Board], val: Int) -> Int
-//    {
-//        var found = false
-//        var min = 0
-//        var max = openList.count - 1
-//        while(!found)
-//        {
-//            let avg = Int(floor(Double((max - min) / 2)))
-//            if(val > openList[avg].cost!)
-//            {
-//                // Search the top half
-//                min = avg
-//            }
-//            else
-//            {
-//                max = avg
-//            }
-//        }
-//    }
+    func findInsertion(ol: [Board], val: Int) -> Int
+    {
+        var found = false
+        var min = 0
+        var max = openList.count - 1
+        while(true)
+        {
+            var avg = Int((max+min)/2)
+            if(ol[avg].cost! == val)
+            {
+                return avg
+//                break
+            }
+            else if (min > max)
+            {
+//                print(min)
+//                print(max)
+//                print(avg)
+//                break
+                return avg
+            }
+            else
+            {
+                if(ol[avg].cost! > val)
+                {
+                    max = avg - 1
+                }
+                else
+                {
+                    min = avg + 1
+                }
+            }
+        }
+    }
 }
