@@ -11,7 +11,7 @@ import Cocoa
 
 class Button: NSButton
 {
-    var color = NSColor.clear
+    var color = NSColor.white
     
     init(frame: NSRect, col: NSColor)
     {
@@ -26,17 +26,17 @@ class Button: NSButton
     
     required init?(coder aDecoder: NSCoder)
     {
-        fatalError("init(coder:) has not been implemented")
+        fatalError("wrong init")
     }
     
     override func draw(_ dirtyRect: NSRect)
     {
         super.draw(dirtyRect)
-        
+
         NSColor.clear.setFill()
         NSRectFill(dirtyRect)
-//        self.layer?.backgroundColor = CGColor.black
-        var path = NSBezierPath(ovalIn: dirtyRect)
+        let path = NSBezierPath(ovalIn: dirtyRect)
+        path.lineWidth = 3.0
         color.setFill()
         path.fill()
         NSColor.black.setStroke()
