@@ -8,6 +8,8 @@
 
 import Foundation
 var counter = 0
+var open = 0
+var closed = 0
 class Board : Hashable
 {
     weak var parent: Board?
@@ -63,6 +65,8 @@ class Board : Hashable
         blueScore = 0
         child = [Board]()
         openSpaces = 6 * 7
+        
+        open += 1
     }
     init(b: [[Int]])
     {
@@ -71,6 +75,8 @@ class Board : Hashable
         blueScore = 0
         child = [Board]()
         openSpaces = 6 * 7
+        
+        open += 1
     }
     
     init(b: [[Int]], par: Board)
@@ -81,11 +87,13 @@ class Board : Hashable
         blueScore = parent!.blueScore
         child = [Board]()
         openSpaces = par.openSpaces - 1
+        
+        open += 1
     }
-//    
-//    deinit {
-//        counter += 1
-//    }
+    
+    deinit {
+        closed += 1
+    }
 
     func checkBoard(row: Int, col: Int, checkVal: Int) -> Int
     {

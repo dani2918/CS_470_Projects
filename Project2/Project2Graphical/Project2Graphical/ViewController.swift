@@ -306,7 +306,9 @@ class ViewController: NSViewController {
         }
         board = nil
         par = nil
-//        print("COUNTER IS:",counter)
+//        print("open is:", open)
+//        print("closed is:", closed)
+//        print("COUNTER IS:",open-closed)
 //        counter = 0
     }
     
