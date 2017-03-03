@@ -7,29 +7,33 @@
 //
 
 import Cocoa
+import Darwin
 
 class ViewController: NSViewController {
 
     @IBOutlet var mainView: NSView!
     @IBOutlet weak var boardSpace: NSScrollView!
-    
     var buttonArray = Array(repeating: NSButton(), count: 7)
     var circleArray  = Array(repeating: Array(repeating: NSButton(), count: 7), count: 6)
     var storedBoard = Array(repeating: Array(repeating: 0, count: 7), count: 6)
     var winCondition = false
-    
+    var drawCondition = false
+    var par: Board? = nil
+    var firstPlaythrough = true
     
     // Coloring vars
     @IBOutlet weak var moveCounter: NSTextField!
     @IBOutlet weak var currentTurn: NSColorWell!
     @IBOutlet weak var errText: NSTextField!
-
     @IBOutlet weak var winText: NSTextField!
+    @IBOutlet weak var redAIButton: NSButton!
+    @IBOutlet weak var blueAIButton: NSButton!
+    @IBOutlet weak var noAIButton: NSButton!
+    @IBOutlet weak var bothAIButton: NSButton!
     let blueCol = NSColor.init(red: 55.0/255.0, green: 18.0/255.0, blue: 201.0/255.0, alpha: 1.0)
     let redCol = NSColor.init(red: 214.0/255.0, green: 6.0/255.0, blue: 41.0/255.0, alpha: 1.0)
+    var greenCol = NSColor.init(red: 0.0, green: 180.0/255.0, blue: 0.0, alpha: 1.0)
     var curColor = NSColor()
-    
-    
     var turn = 1
     
     override func viewDidLoad() {
@@ -39,7 +43,13 @@ class ViewController: NSViewController {
         setupColors()
         moveCounter.stringValue = ("\(1)")
         turn = 1
-        NSEvent.addLocalMonitorForEvents(matching: NSEventMask.keyDown, handler: keyDownEvent)
+        //blueAIButton.state = NSOnState
+        par = Board(b: storedBoard)
+        if(firstPlaythrough)
+        {
+            NSEvent.addLocalMonitorForEvents(matching: NSEventMask.keyDown, handler: keyDownEvent)
+            firstPlaythrough = false
+        }
     }
     
     func keyDownEvent(event: NSEvent) -> NSEvent
@@ -77,7 +87,7 @@ class ViewController: NSViewController {
         circleArray  = Array(repeating: Array(repeating: NSButton(), count: 7), count: 6)
         storedBoard = Array(repeating: Array(repeating: 0, count: 7), count: 6)
         winCondition = false
-        
+        drawCondition = false
         viewDidLoad()
     }
     
@@ -87,7 +97,6 @@ class ViewController: NSViewController {
         let height = boardSpace.bounds.height
         let ymin = boardSpace.frame.minY
         let xmin = boardSpace.frame.minX
-//        print(ymin,ymax)
         
         for i in 0..<buttonArray.count
         {
@@ -137,6 +146,15 @@ class ViewController: NSViewController {
         currentTurn.color = curColor
     }
     
+    @IBAction func startAIRed(_ sender: NSButton)
+    {
+        if(redAIButton.state == NSOnState || bothAIButton.state == NSOnState)
+        {
+            let button = NSButton()
+            button.title = "3"
+            clickOnButton(sender: button)
+        }
+    }
     
     func redrawCirc(row: Int, col: Int, nscol: NSColor)
     {
@@ -144,7 +162,6 @@ class ViewController: NSViewController {
         let height = boardSpace.bounds.height - 20
         let color = nscol
         let newRow = 5 - row
-  
         let xSize = CGFloat(7)
         let ySize = CGFloat(6)
         let rect = NSMakeRect(width/xSize * CGFloat(col) + 5.0, height/ySize * CGFloat(newRow) + 10.0, width/xSize - 10.0 , height/ySize - 5.0 )
@@ -168,7 +185,7 @@ class ViewController: NSViewController {
     
     func clickOnButton(sender: NSButton)
     {
-        if (winCondition)
+        if (winCondition || drawCondition)
         {
             return
         }
@@ -183,12 +200,10 @@ class ViewController: NSViewController {
                 break
             }
         }
-        
         if(firstOpen > 5)
         {
             // Error function
             errText.isHidden = false
-//            print("TOO MANY")
             return
         }
         redrawCirc(row: firstOpen, col: sentInt, nscol: curColor)
@@ -203,11 +218,22 @@ class ViewController: NSViewController {
         {
             storedBoard[firstOpen][sentInt] = 2
         }
+        var board: Board?
+        board = Board(b: storedBoard)
+        if(board!.openSpaces == 0)
+        {
+//            print("BOARD FULL")
+            drawCondition = true
+            winText.stringValue = "DRAW"
+            winText.textColor = greenCol
+            winText.isHidden = false
+            return
+        }
         
+        let winCond = board!.checkBoard(row: firstOpen, col: sentInt, checkVal: storedBoard[firstOpen][sentInt])
         
-        // Check to see if solved
-        var board = Board(b: storedBoard)
-        let winCond = board.checkBoard(row: firstOpen, col: sentInt, checkVal: storedBoard[firstOpen][sentInt]) 
+//        print("Max is: ", board.maxCorrect)
+        
         if(winCond != 0)
         {
             // Red/p1 turn
@@ -225,7 +251,7 @@ class ViewController: NSViewController {
             winText.isHidden = false
             winCondition = true
             
-            let b = board.getSoln()
+            let b = board!.getSoln()
             let yellowColor = NSColor.init(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.7)
             var found = false
             for i in 0..<6
@@ -253,8 +279,34 @@ class ViewController: NSViewController {
             moveCounter.stringValue = ("\(((turn+2)/2))")
             turn += 1
             changeCol()
+            
+//             Starting negamax
+            var color: Int
+            if(curColor == blueCol && (blueAIButton.state == NSOnState || bothAIButton.state == NSOnState))
+            {
+                color = -1
+                let n = negaMaxInit(b: board, color: color)
+                let button = NSButton()
+                button.title = String(n)
+                clickOnButton(sender: button)
+                
+            }
+            else if(curColor == redCol && (redAIButton.state == NSOnState || bothAIButton.state == NSOnState))
+            {
+                color = 1
+                let n = negaMaxInit(b: board, color: color)
+                let button = NSButton()
+                button.title = String(n)
+                clickOnButton(sender: button)
+//                print("n is: \(n), board is:")
+//                b.printBoard()
+            }
+
+    
         }
-        
+        board = nil
+        par = nil
+        print("COUNTER IS:",counter)
     }
     
     func changeCol()
@@ -270,6 +322,11 @@ class ViewController: NSViewController {
         currentTurn.color = curColor
     }
     
+    @IBAction func aiRadioButtons(_ sender: NSButton)
+    {
+        // Connects radio buttons
+        
+    }
     
     
 
