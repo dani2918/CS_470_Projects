@@ -82,10 +82,10 @@ class Board : Hashable
         child = [Board]()
         openSpaces = par.openSpaces - 1
     }
-    
-    deinit {
-        counter += 1
-    }
+//    
+//    deinit {
+//        counter += 1
+//    }
 
     func checkBoard(row: Int, col: Int, checkVal: Int) -> Int
     {

@@ -2,6 +2,7 @@ import Foundation
 var maxDepth = 7
 
 
+
 func negaMaxInit(b: Board?, color: Int) -> Int
 {
 //    print("color is \(color)")
@@ -65,6 +66,12 @@ func negaMax(b: Board?, depth: Int, color: Int) -> Int
     
     var bestValue = Int.min
     var bestArr = [Int]()
+   
+    
+    
+    
+    
+    
     for i in 0..<7
     {
         b!.child.append(move(b: b!, col: i, turn: color))
@@ -83,6 +90,8 @@ func negaMax(b: Board?, depth: Int, color: Int) -> Int
         }
         
     }
+    
+    
     b!.heuristic = bestValue
 //    print("BEST ARRAY: ", bestArr, "DEPTH: ", depth)
     if(depth == maxDepth)

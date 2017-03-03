@@ -306,7 +306,8 @@ class ViewController: NSViewController {
         }
         board = nil
         par = nil
-        print("COUNTER IS:",counter)
+//        print("COUNTER IS:",counter)
+//        counter = 0
     }
     
     func changeCol()
