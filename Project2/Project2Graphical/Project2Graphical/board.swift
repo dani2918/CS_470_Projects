@@ -79,6 +79,16 @@ class Board : Hashable
         open += 1
     }
     
+    init(b: [[Int]], os: Int)
+    {
+        gameState = b
+        redScore = 0
+        blueScore = 0
+        child = [Board]()
+        openSpaces = os - 1
+        open += 1
+    }
+    
     init(b: [[Int]], par: Board)
     {
         gameState = b

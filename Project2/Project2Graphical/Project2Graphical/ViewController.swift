@@ -178,6 +178,10 @@ class ViewController: NSViewController {
         }
         else {  print("No such tag") }
         newCircButton.tag = newRow*10+col + 1
+//        let textSize = CGFloat((buttonArray.count * -1 + 9) * 10)
+//        newCircButton.title = "\(turn)"
+//        newCircButton.alignment = NSTextAlignment.center
+//        newCircButton.font = NSFont(name: "Helvetica", size: textSize)
         boardSpace.addSubview(newCircButton)
         circleArray[newRow][col] = newCircButton
         
@@ -219,7 +223,7 @@ class ViewController: NSViewController {
             storedBoard[firstOpen][sentInt] = 2
         }
         var board: Board?
-        board = Board(b: storedBoard)
+        board = Board(b: storedBoard, os: 6*7+1 - turn)
         if(board!.openSpaces == 0)
         {
 //            print("BOARD FULL")
@@ -308,7 +312,10 @@ class ViewController: NSViewController {
         par = nil
 //        print("open is:", open)
 //        print("closed is:", closed)
-//        print("COUNTER IS:",open-closed)
+//        print("diff IS:",open-closed)
+//        
+//        open = open - closed
+//        closed = 0
 //        counter = 0
     }
     
