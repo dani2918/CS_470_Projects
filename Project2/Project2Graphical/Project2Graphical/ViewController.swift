@@ -224,6 +224,7 @@ class ViewController: NSViewController {
         }
         var board: Board?
         board = Board(b: storedBoard, os: 6*7+1 - turn)
+//        print(board!.eval)
         if(board!.openSpaces == 0)
         {
 //            print("BOARD FULL")

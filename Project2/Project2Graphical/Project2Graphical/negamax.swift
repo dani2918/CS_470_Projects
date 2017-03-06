@@ -1,5 +1,5 @@
 import Foundation
-var maxDepth = 8
+var maxDepth = 10
 
 
 
@@ -76,7 +76,7 @@ func negaMaxFirstChildren(b: Board?, depth: Int, color: Int) -> [Int]
             b!.child[i] = move(b: b!, col: i, turn: color)
             if((b!.child[i]) != nil)
             {
-                n[i] = -1 * negaMax(b: b!.child[i]!, depth: depth - 1, color: -1 * color)
+                n[i] = -1 * negaMax(b: b!.child[i]!,  depth: depth - 1, alp: Int.min + 1, bet: Int.max, color: -1 * color)
                 b!.child[i]!.heuristic = n[i]
             }
             else
@@ -97,7 +97,7 @@ func negaMaxFirstChildren(b: Board?, depth: Int, color: Int) -> [Int]
 
 
 
-func negaMax(b: Board?, depth: Int, color: Int) -> Int
+func negaMax(b: Board?, depth: Int, alp: Int, bet: Int, color: Int) -> Int
 {
     if(b!.openSpaces == 0)
     {
@@ -117,17 +117,25 @@ func negaMax(b: Board?, depth: Int, color: Int) -> Int
     var bestValue = Int.min
     var bestArr = [Int]()
    
-    
+    var newalpha = alp
     for i in 0..<7
     {
         b!.child.append(move(b: b!, col: i, turn: color))
         // color 1: red move, color -1: blue move
         //let child = move(b: b, col: i, turn: color)
         var v = Int.min
+        
         if((b!.child[i]) != nil)
         {
-            v = -1 * negaMax(b: b!.child[i]!, depth: depth - 1, color: -1 * color)
+            
+            v = -1 * negaMax(b: b!.child[i]!, depth: depth - 1, alp: -1 * bet, bet: -1 * newalpha, color: -1 * color)
             bestValue = max(v, bestValue)
+            newalpha = max(alp, v)
+            if(newalpha >= bet)
+            {
+//                print("AB")
+                break
+            }
             bestArr.append(v)
         }
         else

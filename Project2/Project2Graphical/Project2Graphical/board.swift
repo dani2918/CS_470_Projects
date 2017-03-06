@@ -14,6 +14,7 @@ class Board : Hashable
 {
     weak var parent: Board?
     var child: [Board?]
+    var eval = Array(repeating: Array(repeating: (0, [0,0,0,0], [0,0,0,0]), count: 7), count: 6)
     var heuristic = 0
     var gameState = Array(repeating: Array(repeating: 0, count: 7), count: 6)
     // Array to hold solns for each of the four winning directions
@@ -101,18 +102,60 @@ class Board : Hashable
         open += 1
     }
     
-    deinit {
-        closed += 1
-    }
+//    deinit {
+//        closed += 1
+//    }
 
     func checkBoard(row: Int, col: Int, checkVal: Int) -> Int
     {
         var found = 0
+        eval[row][col].0 = checkVal
+//        print(eval)
         solvedArray = Array(repeating: Array(repeating: (Int(), Int()), count: 1), count: 6)
         for i in 0..<4
         {
             solvedArray[i].append(row,col)
         }
+        
+        var correct = Array(repeating: 0, count: 8)
+        var potential = Array(repeating: 0, count: 8)
+        var cBool = Array(repeating: true, count: 8)
+        var pBool = Array(repeating: true, count: 8)
+        
+        for i in 0..<4
+        {
+            //N check = 0
+            if(row < 6)
+            {
+                if(gameState[row + i][col] == checkVal && cBool[0])
+                {
+                    solvedArray[0].append(row,col)
+                    correct[0] += 1
+                    potential[0] += 1
+//                    return checkBoardHelper(row: row + 1, col: col, dir: .n, checkVal: checkVal) + 1
+                }
+                else if (gameState[row + i][col] == 0 && pBool[0])
+                {
+                    cBool[0] = false
+                    potential[0] += 1
+                }
+                else
+                {
+                    cBool[0] = false; pBool[0] = false
+                }
+            }
+            else
+            {
+                cBool[0] = false; pBool[0] = false
+            }
+            
+        }
+        
+        
+        
+        
+        
+        
         vertCorrect = checkBoardHelper(row: row + 1, col: col, dir: .n, checkVal: checkVal) + 1 + checkBoardHelper(row: row - 1, col: col, dir: .s, checkVal: checkVal)
         horizCorrect = checkBoardHelper(row: row, col: col + 1, dir: .e, checkVal: checkVal) + 1 + checkBoardHelper(row: row, col: col - 1, dir: .w, checkVal: checkVal)
         leftToRightDiagCorrect = checkBoardHelper(row: row + 1, col: col + 1, dir: .ne, checkVal: checkVal) + 1 + checkBoardHelper(row: row - 1, col: col - 1, dir: .sw, checkVal: checkVal)
