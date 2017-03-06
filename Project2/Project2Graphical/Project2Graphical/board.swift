@@ -11,6 +11,9 @@ var open = 0
 var closed = 0
 var gaussianDist = [[3,4,5,7,5,4,3],[4,6,8,10,8,6,4],[5,8,11,13,11,8,5],[5,8,11,13,11,8,5],[4,6,8,10,8,6,4],[3,4,5,7,5,4,3]]
 
+var mainW =  2.80//3.25//Double(arc4random()) /  Double(UInt32.max) * 100.0
+var gausW = 0.0//0.575//Double(arc4random()) /  Double(UInt32.max) * 100.0
+
 class Board //: Hashable
 {
     weak var parent: Board?
@@ -22,10 +25,12 @@ class Board //: Hashable
     var soln = [(Int, Int)]()
     var vertCorrect = 0, horizCorrect = 0, leftToRightDiagCorrect = 0, rightToLeftDiagCorrect = 0, maxCorrect = 0
     var vExtra = 0,  hExtra = 0,  lrExtra = 0,  rlExtra = 0
-    var redScore: Int
-    var blueScore: Int
+    var redScore = 0
+    var blueScore = 0
     var openSpaces: Int
     var solved = false
+    var increasing = true
+    var decreasing = true
     
     
 //    public var hashValue: Int
@@ -103,9 +108,9 @@ class Board //: Hashable
         open += 1
     }
     
-    deinit {
-        closed += 1
-    }
+//    deinit {
+//        closed += 1
+//    }
     
     func checkBoard(row: Int, col: Int, checkVal: Int) -> Int
     {
@@ -115,16 +120,20 @@ class Board //: Hashable
         {
             solvedArray[i].append(row,col)
         }
-    
+        
+        increasing = true; decreasing = true
         vertCorrect = checkBoardHelper(row: row + 1, col: col, dir: .n, checkVal: checkVal, depth: 1) + 1 +  checkBoardHelper(row: row - 1, col: col, dir: .s, checkVal: checkVal, depth: 1)
+        increasing = true; decreasing = true
         horizCorrect = checkBoardHelper(row: row, col: col + 1, dir: .e, checkVal: checkVal, depth: 1) + 1 + checkBoardHelper(row: row, col: col - 1, dir: .w, checkVal: checkVal, depth: 1)
+        increasing = true; decreasing = true
         leftToRightDiagCorrect = checkBoardHelper(row: row + 1, col: col + 1, dir: .ne, checkVal: checkVal, depth: 1) + 1 + checkBoardHelper(row: row - 1, col: col - 1, dir: .sw, checkVal: checkVal, depth: 1)
+        increasing = true; decreasing = true
         rightToLeftDiagCorrect = checkBoardHelper(row: row + 1, col: col - 1, dir: .nw, checkVal: checkVal, depth: 1) + 1 + checkBoardHelper(row: row - 1, col: col + 1, dir: .se, checkVal: checkVal, depth: 1)
         
-//        print()
+//        print("\n")
 //        print(vertCorrect, horizCorrect, leftToRightDiagCorrect, rightToLeftDiagCorrect)
 //        print(vExtra, hExtra, lrExtra, rlExtra)
-        
+//        
         
         if(vertCorrect >= 4)
         {
@@ -150,24 +159,47 @@ class Board //: Hashable
         var score = 0
         
         maxCorrect = max(vertCorrect, horizCorrect, leftToRightDiagCorrect, rightToLeftDiagCorrect)
-        if (maxCorrect >= 1000)
+        if (maxCorrect >= 4)
         {
             score = Int.max
         }
         else
         {
             score = scrub(correct: vertCorrect, extra: vExtra) + scrub(correct: horizCorrect, extra: hExtra) + scrub(correct: leftToRightDiagCorrect, extra: lrExtra) + scrub(correct: rightToLeftDiagCorrect, extra: rlExtra)
-            //score += gaussianDist[row][col]
+            score += Int(Double(gaussianDist[row][col]) * gausW)
         }
         // Red check
+//        if(checkVal == 1)
+//        {
+//            redScore = score
+//        }
+//        else
+//        {
+//            blueScore = score
+//        }
         if(checkVal == 1)
         {
-            redScore = score
+            if(score == Int.max)
+            {
+                redScore = Int.max
+            }
+            else
+            {
+                redScore += score
+            }
         }
         else
         {
-            blueScore = score
+            if(score == Int.max)
+            {
+                blueScore = Int.max
+            }
+            else
+            {
+                blueScore += score
+            }
         }
+        
         return found
     }
     
@@ -182,15 +214,16 @@ class Board //: Hashable
         case .n:
             if(row < 6)
             {
-                if(gameState[row][col] == checkVal)
+                if(gameState[row][col] == checkVal && increasing)
                 {
                     solvedArray[0].append(row,col)
                     return checkBoardHelper(row: row + 1, col: col, dir: .n, checkVal: checkVal, depth: depth + 1) + 1
                 }
-                if(gameState[row][col] == 0)
+                if(gameState[row][col] == 0 || (gameState[row][col] == checkVal && !increasing))
                 {
                     vExtra += 1
-                    return checkBoardHelper(row: row + 1, col: col, dir: .n, checkVal: 4, depth: depth + 1)
+                    increasing = false
+                    return checkBoardHelper(row: row + 1, col: col, dir: .n, checkVal: checkVal, depth: depth + 1)
                     
                 }
             }
@@ -198,105 +231,112 @@ class Board //: Hashable
         case .s:
             if(row >= 0)
             {
-                if(gameState[row][col] == checkVal)
+                if(gameState[row][col] == checkVal && decreasing)
                 {
                     solvedArray[0].append(row,col)
                     return checkBoardHelper(row: row - 1, col: col, dir: .s, checkVal: checkVal, depth: depth + 1) + 1
                 }
-                if(gameState[row][col] == 0)
+                if(gameState[row][col] == 0 || (gameState[row][col] == checkVal && !decreasing))
                 {
                     vExtra += 1
-                    return checkBoardHelper(row: row - 1, col: col, dir: .s, checkVal: 4, depth: depth + 1)
+                    decreasing = false
+                    return checkBoardHelper(row: row - 1, col: col, dir: .s, checkVal: checkVal, depth: depth + 1)
                 }
             }
             return 0
         case .e:
             if(col < 7)
             {
-                if(gameState[row][col] == checkVal)
+                if(gameState[row][col] == checkVal && increasing)
                 {
                     solvedArray[1].append(row,col)
                     return checkBoardHelper(row: row, col: col + 1, dir: .e, checkVal: checkVal, depth: depth + 1) + 1
                 }
-                if(gameState[row][col] == 0)
+                if(gameState[row][col] == 0 || (gameState[row][col] == checkVal && !increasing))
                 {
                     hExtra += 1
-                    return checkBoardHelper(row: row, col: col + 1, dir: .e, checkVal: 4, depth: depth + 1)
+                    increasing = false
+                    return checkBoardHelper(row: row, col: col + 1, dir: .e, checkVal: checkVal, depth: depth + 1)
                 }
             }
             return 0
         case .w:
             if(col >= 0)
             {
-                if(gameState[row][col] == checkVal)
+                if(gameState[row][col] == checkVal && decreasing)
                 {
                     solvedArray[1].append(row,col)
                     return checkBoardHelper(row: row, col: col - 1, dir: .w, checkVal: checkVal, depth: depth + 1) + 1
                 }
-                if(gameState[row][col] == 0)
+                if(gameState[row][col] == 0 || (gameState[row][col] == checkVal && !decreasing))
                 {
                     hExtra += 1
-                    return checkBoardHelper(row: row, col: col - 1, dir: .w, checkVal: 4, depth: depth + 1)
+                    decreasing = false
+                    return checkBoardHelper(row: row, col: col - 1, dir: .w, checkVal: checkVal, depth: depth + 1)
                 }
             }
             return 0
         case .ne:
             if(row < 6 && col < 7)
             {
-                if(gameState[row][col] == checkVal)
+                if(gameState[row][col] == checkVal && increasing)
                 {
                     solvedArray[2].append(row,col)
                     return checkBoardHelper(row: row + 1, col: col + 1, dir: .ne, checkVal: checkVal, depth: depth + 1) + 1
                 }
-                if(gameState[row][col] == 0)
+                if(gameState[row][col] == 0 || (gameState[row][col] == checkVal && !increasing))
                 {
                     lrExtra += 1
-                    return checkBoardHelper(row: row + 1, col: col + 1, dir: .ne, checkVal: 4, depth: depth + 1)
+                    increasing = false
+                    return checkBoardHelper(row: row + 1, col: col + 1, dir: .ne, checkVal: checkVal, depth: depth + 1)
                 }
             }
             return 0
         case .sw:
             if(row >= 0 && col >= 0)
             {
-                if(gameState[row][col] == checkVal)
+                if(gameState[row][col] == checkVal && decreasing)
                 {
                     solvedArray[2].append(row,col)
                     return checkBoardHelper(row: row - 1, col: col - 1, dir: .sw, checkVal: checkVal, depth: depth + 1) + 1
                 }
-                if(gameState[row][col] == 0)
+                if(gameState[row][col] == 0 || (gameState[row][col] == checkVal && !decreasing))
                 {
                     lrExtra += 1
-                    return checkBoardHelper(row: row - 1, col: col - 1, dir: .sw, checkVal: 4, depth: depth + 1)
+                    decreasing = false
+                    return checkBoardHelper(row: row - 1, col: col - 1, dir: .sw, checkVal: checkVal, depth: depth + 1)
                 }
             }
             return 0
         case .nw:
             if(row < 6 && col >= 0)
             {
-                if(gameState[row][col] == checkVal)
+                if(gameState[row][col] == checkVal && increasing)
                 {
                     solvedArray[3].append(row,col)
                     return checkBoardHelper(row: row + 1, col: col - 1, dir: .nw, checkVal: checkVal, depth: depth + 1) + 1
                 }
-                if(gameState[row][col] == 0)
+                if(gameState[row][col] == 0 || (gameState[row][col] == checkVal && !increasing))
                 {
                     rlExtra += 1
-                    return checkBoardHelper(row: row + 1, col: col - 1, dir: .nw, checkVal: 4, depth: depth + 1)
+                    increasing = false
+                    return checkBoardHelper(row: row + 1, col: col - 1, dir: .nw, checkVal: checkVal, depth: depth + 1)
                 }
             }
             return 0
         case .se:
             if(row >= 0 && col < 7)
             {
-                if(gameState[row][col] == checkVal)
+                if(gameState[row][col] == checkVal && decreasing)
                 {
                     solvedArray[3].append(row,col)
                     return checkBoardHelper(row: row - 1, col: col + 1, dir: .se, checkVal: checkVal, depth: depth + 1) + 1
                 }
-                if(gameState[row][col] == 0)
+                if(gameState[row][col] == 0 || (gameState[row][col] == checkVal && !decreasing))
                 {
                     rlExtra += 1
-                    return checkBoardHelper(row: row - 1, col: col + 1, dir: .se, checkVal: 4, depth: depth + 1)
+                    decreasing = false
+                    return checkBoardHelper(row: row - 1, col: col + 1, dir: .se, checkVal: checkVal, depth: depth + 1)
                 }
             }
             return 0
@@ -336,7 +376,7 @@ class Board //: Hashable
         }
         else
         {
-            let r = Int(pow(Double(10), Double(correct - 1))) + extra
+            let r = Int(pow(Double(mainW), Double(correct - 1))) + extra
 //            print("\(r)", terminator: " ")
             return r
         }

@@ -112,17 +112,11 @@ func negaMax(b: Board?, depth: Int, alp: Int, bet: Int, color: Int) -> Int
     for i in 0..<7
     {
         let orderi = order[i]
-//        b!.child.insert(move(b: b!, col: orderi, turn: color), at: orderi)
-//        b!.child[i] = move(b: b!, col: i, turn: color)
         b!.child[orderi] = move(b: b!, col: orderi, turn: color)
 
         var v = Int.min
-        
-//        if((b!.child[i]) != nil)
         if((b!.child[orderi]) != nil)
         {
-            
-//            v = -1 * negaMax(b: b!.child[i]!, depth: depth - 1, alp: -1 * bet, bet: -1 * newalpha, color: -1 * color)
             v = -1 * negaMax(b: b!.child[orderi]!, depth: depth - 1, alp: -1 * bet, bet: -1 * newalpha, color: -1 * color)
             bestValue = max(v, bestValue)
             newalpha = max(alp, v)
@@ -148,10 +142,6 @@ func negaMax(b: Board?, depth: Int, alp: Int, bet: Int, color: Int) -> Int
             {
                 print("BEST ARRAY: ", bestArr, "DEPTH: ", depth)
                 b!.child[i]!.heuristic = bestArr[i]
-            }
-            else
-            {
-                
             }
         }
     }
