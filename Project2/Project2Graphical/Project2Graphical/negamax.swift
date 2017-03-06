@@ -2,6 +2,8 @@ import Foundation
 var maxDepth = 10
 
 
+// For reordering
+let order = [5,3,1,0,2,4,6]
 
 func negaMaxInit(b: Board?, color: Int) -> Int
 {
@@ -16,18 +18,6 @@ func negaMaxInit(b: Board?, color: Int) -> Int
     var index = [Int]()
     for i in 0..<7
     {
-//        if(b!.child.isEmpty)
-//        {
-//            
-//        }
-//        if(b!.child[i] != nil)
-//        {
-//            print( i, ": b!.heuristic", b!.heuristic, "child H: ", b!.child[i]!.heuristic)
-//            if (b!.heuristic ==   b!.child[i]!.heuristic)
-//            {
-//                index.append(i)
-//            }
-//        }
         if (nArr[i] == n)
         {
             index.append(i)
@@ -42,18 +32,21 @@ func negaMaxInit(b: Board?, color: Int) -> Int
     let bestBoard = index[bestIndex]
 //    print("max Board is", bestBoard, "index array:", bestIndex)
 //    b!.child[bestBoard]?.printBoard()
-    //return n
     let end = NSDate()
     let timeSince: Double = end.timeIntervalSince(start as Date)
     let time = String(format: "%.02f", timeSince)
-    b!.child.removeAll()
+    
+    let queue = DispatchQueue(label: "remove", qos: .userInitiated, attributes: .concurrent)
+    let workItem = DispatchWorkItem(qos: .userInitiated)
+    {
+        b!.child.removeAll()
+    }
+    queue.async(execute: workItem)
     print("\(time) seconds\n")
-    
-    
-//    let _ = negaMaxFirstChildren(b: b!, depth: maxDepth, color: color)
     
     return bestBoard
 }
+
 
 
 func negaMaxFirstChildren(b: Board?, depth: Int, color: Int) -> [Int]
@@ -64,15 +57,13 @@ func negaMaxFirstChildren(b: Board?, depth: Int, color: Int) -> [Int]
         b!.child.append(Board())
     }
     
-    let queue = DispatchQueue(label: "test", qos: .userInitiated, attributes: .concurrent)
+    let queue = DispatchQueue(label: "run", qos: .userInitiated, attributes: .concurrent)
     let group = DispatchGroup()
-
     
     for i in 0..<7
     {
         queue.async(group: group)
         {
-            //        b!.child.append(move(b: b!, col: i, turn: color))
             b!.child[i] = move(b: b!, col: i, turn: color)
             if((b!.child[i]) != nil)
             {
@@ -102,38 +93,41 @@ func negaMax(b: Board?, depth: Int, alp: Int, bet: Int, color: Int) -> Int
     if(b!.openSpaces == 0)
     {
         b!.heuristic = b!.redScore - b!.blueScore
-        //        print("score is: \(color * b!.heuristic)")
         return color * b!.heuristic
     }
     if(depth == 0 || b!.solved)
     {
-//        print("redscore is: \(b!.redScore), blue: \(b!.blueScore), color: \(color)")
-//        b!.printBoard()
         b!.heuristic = b!.redScore - b!.blueScore
-//        print("score is: \(color * b!.heuristic)")
         return color * b!.heuristic
     }
     
     var bestValue = Int.min
     var bestArr = [Int]()
+    for _ in 0..<7
+    {
+        b!.child.append(nil)
+    }
    
     var newalpha = alp
     for i in 0..<7
     {
-        b!.child.append(move(b: b!, col: i, turn: color))
-        // color 1: red move, color -1: blue move
-        //let child = move(b: b, col: i, turn: color)
+        let orderi = order[i]
+//        b!.child.insert(move(b: b!, col: orderi, turn: color), at: orderi)
+//        b!.child[i] = move(b: b!, col: i, turn: color)
+        b!.child[orderi] = move(b: b!, col: orderi, turn: color)
+
         var v = Int.min
         
-        if((b!.child[i]) != nil)
+//        if((b!.child[i]) != nil)
+        if((b!.child[orderi]) != nil)
         {
             
-            v = -1 * negaMax(b: b!.child[i]!, depth: depth - 1, alp: -1 * bet, bet: -1 * newalpha, color: -1 * color)
+//            v = -1 * negaMax(b: b!.child[i]!, depth: depth - 1, alp: -1 * bet, bet: -1 * newalpha, color: -1 * color)
+            v = -1 * negaMax(b: b!.child[orderi]!, depth: depth - 1, alp: -1 * bet, bet: -1 * newalpha, color: -1 * color)
             bestValue = max(v, bestValue)
             newalpha = max(alp, v)
             if(newalpha >= bet)
             {
-//                print("AB")
                 break
             }
             bestArr.append(v)
@@ -145,9 +139,7 @@ func negaMax(b: Board?, depth: Int, alp: Int, bet: Int, color: Int) -> Int
         
     }
     
-    
     b!.heuristic = bestValue
-//    print("BEST ARRAY: ", bestArr, "DEPTH: ", depth)
     if(depth == maxDepth)
     {
         for i in 0..<bestArr.count
@@ -177,16 +169,6 @@ func move(b: Board?, col: Int, turn: Int) -> Board?
             break
         }
     }
-//    if(b!.openSpaces == 0)
-//    {
-//        let _ = 3
-//        //FULL BOARD
-//    }
-//    if(firstOpen > 5 && col == 6)
-//    {
-//        let _ = 3
-//        return nil
-//    }
     if(firstOpen > 5)
     {
         // Error function
@@ -204,7 +186,6 @@ func move(b: Board?, col: Int, turn: Int) -> Board?
     {
         newBoard!.gameState[firstOpen][col] = 2
     }
-    
     let winCond = newBoard!.checkBoard(row: firstOpen, col: col, checkVal: newBoard!.gameState[firstOpen][col])
     if winCond != 0
     {

@@ -5,48 +5,49 @@
 //  Created by Matt Daniel on 2/23/17.
 //  Copyright © 2017 Matthew Daniel. All rights reserved.
 //
-
 import Foundation
 var counter = 0
 var open = 0
 var closed = 0
-class Board : Hashable
+var gaussianDist = [[3,4,5,7,5,4,3],[4,6,8,10,8,6,4],[5,8,11,13,11,8,5],[5,8,11,13,11,8,5],[4,6,8,10,8,6,4],[3,4,5,7,5,4,3]]
+
+class Board //: Hashable
 {
     weak var parent: Board?
     var child: [Board?]
-    var eval = Array(repeating: Array(repeating: (0, [0,0,0,0], [0,0,0,0]), count: 7), count: 6)
     var heuristic = 0
     var gameState = Array(repeating: Array(repeating: 0, count: 7), count: 6)
     // Array to hold solns for each of the four winning directions
-    var solvedArray = Array(repeating: Array(repeating: (Int(), Int()), count: 1), count: 4)
+    var solvedArray = Array(repeating: Array(repeating: (Int(), Int()), count: 1), count: 7)
     var soln = [(Int, Int)]()
     var vertCorrect = 0, horizCorrect = 0, leftToRightDiagCorrect = 0, rightToLeftDiagCorrect = 0, maxCorrect = 0
+    var vExtra = 0,  hExtra = 0,  lrExtra = 0,  rlExtra = 0
     var redScore: Int
     var blueScore: Int
     var openSpaces: Int
     var solved = false
     
     
-    public var hashValue: Int
-    {
-        return ObjectIdentifier(self).hashValue
-    }
-    
-    static func ==(lhs: Board, rhs: Board) -> Bool
-    {
-        var test = true
-        for i in 0..<6
-        {
-            for j in 0..<7
-            {
-                if (lhs.gameState[i][j] != rhs.gameState[i][j])
-                {
-                    test = false
-                }
-            }
-        }
-        return test
-    }
+//    public var hashValue: Int
+//    {
+//        return ObjectIdentifier(self).hashValue
+//    }
+//    
+//    static func ==(lhs: Board, rhs: Board) -> Bool
+//    {
+//        var test = true
+//        for i in 0..<6
+//        {
+//            for j in 0..<7
+//            {
+//                if (lhs.gameState[i][j] != rhs.gameState[i][j])
+//                {
+//                    test = false
+//                }
+//            }
+//        }
+//        return test
+//    }
     
     enum Direction
     {
@@ -102,64 +103,29 @@ class Board : Hashable
         open += 1
     }
     
-//    deinit {
-//        closed += 1
-//    }
-
+    deinit {
+        closed += 1
+    }
+    
     func checkBoard(row: Int, col: Int, checkVal: Int) -> Int
     {
         var found = 0
-        eval[row][col].0 = checkVal
-//        print(eval)
         solvedArray = Array(repeating: Array(repeating: (Int(), Int()), count: 1), count: 6)
         for i in 0..<4
         {
             solvedArray[i].append(row,col)
         }
+    
+        vertCorrect = checkBoardHelper(row: row + 1, col: col, dir: .n, checkVal: checkVal, depth: 1) + 1 +  checkBoardHelper(row: row - 1, col: col, dir: .s, checkVal: checkVal, depth: 1)
+        horizCorrect = checkBoardHelper(row: row, col: col + 1, dir: .e, checkVal: checkVal, depth: 1) + 1 + checkBoardHelper(row: row, col: col - 1, dir: .w, checkVal: checkVal, depth: 1)
+        leftToRightDiagCorrect = checkBoardHelper(row: row + 1, col: col + 1, dir: .ne, checkVal: checkVal, depth: 1) + 1 + checkBoardHelper(row: row - 1, col: col - 1, dir: .sw, checkVal: checkVal, depth: 1)
+        rightToLeftDiagCorrect = checkBoardHelper(row: row + 1, col: col - 1, dir: .nw, checkVal: checkVal, depth: 1) + 1 + checkBoardHelper(row: row - 1, col: col + 1, dir: .se, checkVal: checkVal, depth: 1)
         
-        var correct = Array(repeating: 0, count: 8)
-        var potential = Array(repeating: 0, count: 8)
-        var cBool = Array(repeating: true, count: 8)
-        var pBool = Array(repeating: true, count: 8)
-        
-        for i in 0..<4
-        {
-            //N check = 0
-            if(row < 6)
-            {
-                if(gameState[row + i][col] == checkVal && cBool[0])
-                {
-                    solvedArray[0].append(row,col)
-                    correct[0] += 1
-                    potential[0] += 1
-//                    return checkBoardHelper(row: row + 1, col: col, dir: .n, checkVal: checkVal) + 1
-                }
-                else if (gameState[row + i][col] == 0 && pBool[0])
-                {
-                    cBool[0] = false
-                    potential[0] += 1
-                }
-                else
-                {
-                    cBool[0] = false; pBool[0] = false
-                }
-            }
-            else
-            {
-                cBool[0] = false; pBool[0] = false
-            }
-            
-        }
+//        print()
+//        print(vertCorrect, horizCorrect, leftToRightDiagCorrect, rightToLeftDiagCorrect)
+//        print(vExtra, hExtra, lrExtra, rlExtra)
         
         
-        
-        
-        
-        
-        vertCorrect = checkBoardHelper(row: row + 1, col: col, dir: .n, checkVal: checkVal) + 1 + checkBoardHelper(row: row - 1, col: col, dir: .s, checkVal: checkVal)
-        horizCorrect = checkBoardHelper(row: row, col: col + 1, dir: .e, checkVal: checkVal) + 1 + checkBoardHelper(row: row, col: col - 1, dir: .w, checkVal: checkVal)
-        leftToRightDiagCorrect = checkBoardHelper(row: row + 1, col: col + 1, dir: .ne, checkVal: checkVal) + 1 + checkBoardHelper(row: row - 1, col: col - 1, dir: .sw, checkVal: checkVal)
-        rightToLeftDiagCorrect = checkBoardHelper(row: row + 1, col: col - 1, dir: .nw, checkVal: checkVal) + 1 + checkBoardHelper(row: row - 1, col: col + 1, dir: .se, checkVal: checkVal)
         if(vertCorrect >= 4)
         {
             found = 1
@@ -180,26 +146,37 @@ class Board : Hashable
         {
             setSoln(s: solvedArray[found-1])
         }
-
+        
+        var score = 0
+        
         maxCorrect = max(vertCorrect, horizCorrect, leftToRightDiagCorrect, rightToLeftDiagCorrect)
-        if (maxCorrect >= 4)
+        if (maxCorrect >= 1000)
         {
-            maxCorrect = Int.max
+            score = Int.max
+        }
+        else
+        {
+            score = scrub(correct: vertCorrect, extra: vExtra) + scrub(correct: horizCorrect, extra: hExtra) + scrub(correct: leftToRightDiagCorrect, extra: lrExtra) + scrub(correct: rightToLeftDiagCorrect, extra: rlExtra)
+            //score += gaussianDist[row][col]
         }
         // Red check
         if(checkVal == 1)
         {
-            redScore = max(redScore, maxCorrect)
+            redScore = score
         }
         else
         {
-            blueScore = max(blueScore, maxCorrect)
+            blueScore = score
         }
         return found
     }
     
-    func checkBoardHelper(row: Int, col: Int, dir: Direction, checkVal: Int) -> Int
+    func checkBoardHelper(row: Int, col: Int, dir: Direction, checkVal: Int, depth: Int) -> Int
     {
+        if(depth > 4)
+        {
+            return 0
+        }
         switch dir
         {
         case .n:
@@ -208,7 +185,13 @@ class Board : Hashable
                 if(gameState[row][col] == checkVal)
                 {
                     solvedArray[0].append(row,col)
-                    return checkBoardHelper(row: row + 1, col: col, dir: .n, checkVal: checkVal) + 1
+                    return checkBoardHelper(row: row + 1, col: col, dir: .n, checkVal: checkVal, depth: depth + 1) + 1
+                }
+                if(gameState[row][col] == 0)
+                {
+                    vExtra += 1
+                    return checkBoardHelper(row: row + 1, col: col, dir: .n, checkVal: 4, depth: depth + 1)
+                    
                 }
             }
             return 0
@@ -218,7 +201,12 @@ class Board : Hashable
                 if(gameState[row][col] == checkVal)
                 {
                     solvedArray[0].append(row,col)
-                    return checkBoardHelper(row: row - 1, col: col, dir: .s, checkVal: checkVal) + 1
+                    return checkBoardHelper(row: row - 1, col: col, dir: .s, checkVal: checkVal, depth: depth + 1) + 1
+                }
+                if(gameState[row][col] == 0)
+                {
+                    vExtra += 1
+                    return checkBoardHelper(row: row - 1, col: col, dir: .s, checkVal: 4, depth: depth + 1)
                 }
             }
             return 0
@@ -228,7 +216,12 @@ class Board : Hashable
                 if(gameState[row][col] == checkVal)
                 {
                     solvedArray[1].append(row,col)
-                    return checkBoardHelper(row: row, col: col + 1, dir: .e, checkVal: checkVal) + 1
+                    return checkBoardHelper(row: row, col: col + 1, dir: .e, checkVal: checkVal, depth: depth + 1) + 1
+                }
+                if(gameState[row][col] == 0)
+                {
+                    hExtra += 1
+                    return checkBoardHelper(row: row, col: col + 1, dir: .e, checkVal: 4, depth: depth + 1)
                 }
             }
             return 0
@@ -238,7 +231,12 @@ class Board : Hashable
                 if(gameState[row][col] == checkVal)
                 {
                     solvedArray[1].append(row,col)
-                    return checkBoardHelper(row: row, col: col - 1, dir: .w, checkVal: checkVal) + 1
+                    return checkBoardHelper(row: row, col: col - 1, dir: .w, checkVal: checkVal, depth: depth + 1) + 1
+                }
+                if(gameState[row][col] == 0)
+                {
+                    hExtra += 1
+                    return checkBoardHelper(row: row, col: col - 1, dir: .w, checkVal: 4, depth: depth + 1)
                 }
             }
             return 0
@@ -248,7 +246,12 @@ class Board : Hashable
                 if(gameState[row][col] == checkVal)
                 {
                     solvedArray[2].append(row,col)
-                    return checkBoardHelper(row: row + 1, col: col + 1, dir: .ne, checkVal: checkVal) + 1
+                    return checkBoardHelper(row: row + 1, col: col + 1, dir: .ne, checkVal: checkVal, depth: depth + 1) + 1
+                }
+                if(gameState[row][col] == 0)
+                {
+                    lrExtra += 1
+                    return checkBoardHelper(row: row + 1, col: col + 1, dir: .ne, checkVal: 4, depth: depth + 1)
                 }
             }
             return 0
@@ -258,7 +261,12 @@ class Board : Hashable
                 if(gameState[row][col] == checkVal)
                 {
                     solvedArray[2].append(row,col)
-                    return checkBoardHelper(row: row - 1, col: col - 1, dir: .sw, checkVal: checkVal) + 1
+                    return checkBoardHelper(row: row - 1, col: col - 1, dir: .sw, checkVal: checkVal, depth: depth + 1) + 1
+                }
+                if(gameState[row][col] == 0)
+                {
+                    lrExtra += 1
+                    return checkBoardHelper(row: row - 1, col: col - 1, dir: .sw, checkVal: 4, depth: depth + 1)
                 }
             }
             return 0
@@ -268,7 +276,12 @@ class Board : Hashable
                 if(gameState[row][col] == checkVal)
                 {
                     solvedArray[3].append(row,col)
-                    return checkBoardHelper(row: row + 1, col: col - 1, dir: .nw, checkVal: checkVal) + 1
+                    return checkBoardHelper(row: row + 1, col: col - 1, dir: .nw, checkVal: checkVal, depth: depth + 1) + 1
+                }
+                if(gameState[row][col] == 0)
+                {
+                    rlExtra += 1
+                    return checkBoardHelper(row: row + 1, col: col - 1, dir: .nw, checkVal: 4, depth: depth + 1)
                 }
             }
             return 0
@@ -278,7 +291,12 @@ class Board : Hashable
                 if(gameState[row][col] == checkVal)
                 {
                     solvedArray[3].append(row,col)
-                    return checkBoardHelper(row: row - 1, col: col + 1, dir: .se, checkVal: checkVal) + 1
+                    return checkBoardHelper(row: row - 1, col: col + 1, dir: .se, checkVal: checkVal, depth: depth + 1) + 1
+                }
+                if(gameState[row][col] == 0)
+                {
+                    rlExtra += 1
+                    return checkBoardHelper(row: row - 1, col: col + 1, dir: .se, checkVal: 4, depth: depth + 1)
                 }
             }
             return 0
@@ -309,11 +327,19 @@ class Board : Hashable
         print()
     }
     
-//    func calcMaxCorrect() -> Int
-//    {
-//        maxCorrect = max(vertCorrect, horizCorrect, leftToRightDiagCorrect, rightToLeftDiagCorrect)
-//        return maxCorrect
-//    }
-//    
+    func scrub(correct: Int, extra: Int) -> Int
+    {
+        if(correct + extra < 4)
+        {
+//            print("0", terminator: " ")
+            return 0
+        }
+        else
+        {
+            let r = Int(pow(Double(10), Double(correct - 1))) + extra
+//            print("\(r)", terminator: " ")
+            return r
+        }
+    }
     
 }
