@@ -49,9 +49,9 @@ func negaMaxInit(b: Board?, color: Int) -> Int
 
 
 
-func negaMaxFirstChildren(b: Board?, depth: Int, color: Int) -> [Int]
+func negaMaxFirstChildren(b: Board?, depth: Int, color: Int) -> [Double]
 {
-    var n = Array(repeating: Int(), count: 7)
+    var n = Array(repeating: Double(), count: 7)
     for _ in 0..<7
     {
         b!.child.append(Board())
@@ -67,12 +67,12 @@ func negaMaxFirstChildren(b: Board?, depth: Int, color: Int) -> [Int]
             b!.child[i] = move(b: b!, col: i, turn: color)
             if((b!.child[i]) != nil)
             {
-                n[i] = -1 * negaMax(b: b!.child[i]!,  depth: depth - 1, alp: Int.min + 1, bet: Int.max, color: -1 * color)
+                n[i] = -1 * negaMax(b: b!.child[i]!,  depth: depth - 1, alp: Double(Int.min) + 1.0, bet: Double(Int.max), color: -1 * color)
                 b!.child[i]!.heuristic = n[i]
             }
             else
             {
-                n[i] = Int.min
+                n[i] = Double(Int.min)
             }
         }
     }
@@ -88,21 +88,21 @@ func negaMaxFirstChildren(b: Board?, depth: Int, color: Int) -> [Int]
 
 
 
-func negaMax(b: Board?, depth: Int, alp: Int, bet: Int, color: Int) -> Int
+func negaMax(b: Board?, depth: Int, alp: Double, bet: Double, color: Int) -> Double
 {
     if(b!.openSpaces == 0)
     {
         b!.heuristic = b!.redScore - b!.blueScore
-        return color * b!.heuristic
+        return Double(color) * b!.heuristic
     }
     if(depth == 0 || b!.solved)
     {
         b!.heuristic = b!.redScore - b!.blueScore
-        return color * b!.heuristic
+        return Double(color) * b!.heuristic
     }
     
-    var bestValue = Int.min
-    var bestArr = [Int]()
+    var bestValue = Double(Int.min)
+    var bestArr = [Double]()
     for _ in 0..<7
     {
         b!.child.append(nil)
@@ -114,7 +114,7 @@ func negaMax(b: Board?, depth: Int, alp: Int, bet: Int, color: Int) -> Int
         let orderi = order[i]
         b!.child[orderi] = move(b: b!, col: orderi, turn: color)
 
-        var v = Int.min
+        var v = Double(Int.min)
         if((b!.child[orderi]) != nil)
         {
             v = -1 * negaMax(b: b!.child[orderi]!, depth: depth - 1, alp: -1 * bet, bet: -1 * newalpha, color: -1 * color)
@@ -128,7 +128,7 @@ func negaMax(b: Board?, depth: Int, alp: Int, bet: Int, color: Int) -> Int
         }
         else
         {
-            bestArr.append(Int.min)
+            bestArr.append(Double(Int.min))
         }
         
     }

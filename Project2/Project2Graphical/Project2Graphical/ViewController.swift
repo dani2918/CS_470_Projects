@@ -38,7 +38,7 @@ class ViewController: NSViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("mainW", mainW)//, "Gaussw", gausW)
+        print("mainW", mainW, "Gaussw", gausW)
         setupButtons()
         setupBoard()
         setupColors()

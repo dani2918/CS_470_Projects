@@ -11,22 +11,25 @@ var open = 0
 var closed = 0
 var gaussianDist = [[3,4,5,7,5,4,3],[4,6,8,10,8,6,4],[5,8,11,13,11,8,5],[5,8,11,13,11,8,5],[4,6,8,10,8,6,4],[3,4,5,7,5,4,3]]
 
-var mainW =  2.80//3.25//Double(arc4random()) /  Double(UInt32.max) * 100.0
-var gausW = 0.0//0.575//Double(arc4random()) /  Double(UInt32.max) * 100.0
+var mainW = 3.0//Double(arc4random()) /  Double(UInt32.max) * 3.0 //1.85//2.80//3.25//Double(arc4random()) /  Double(UInt32.max) * 100.0
+var gausW = 100.0//Double(arc4random()) /  Double(UInt32.max) * 5.0//0.7//0.575//Double(arc4random()) /  Double(UInt32.max) * 100.0
 
 class Board //: Hashable
 {
     weak var parent: Board?
     var child: [Board?]
-    var heuristic = 0
+//    var heuristic = 0
+    var heuristic = 0.0
     var gameState = Array(repeating: Array(repeating: 0, count: 7), count: 6)
     // Array to hold solns for each of the four winning directions
     var solvedArray = Array(repeating: Array(repeating: (Int(), Int()), count: 1), count: 7)
     var soln = [(Int, Int)]()
     var vertCorrect = 0, horizCorrect = 0, leftToRightDiagCorrect = 0, rightToLeftDiagCorrect = 0, maxCorrect = 0
     var vExtra = 0,  hExtra = 0,  lrExtra = 0,  rlExtra = 0
-    var redScore = 0
-    var blueScore = 0
+//    var redScore = 0
+//    var blueScore = 0
+        var redScore = 0.0
+        var blueScore = 0.0
     var openSpaces: Int
     var solved = false
     var increasing = true
@@ -156,17 +159,18 @@ class Board //: Hashable
             setSoln(s: solvedArray[found-1])
         }
         
-        var score = 0
+        var score = 0.0
         
         maxCorrect = max(vertCorrect, horizCorrect, leftToRightDiagCorrect, rightToLeftDiagCorrect)
         if (maxCorrect >= 4)
         {
-            score = Int.max
+            score = Double(Int.max)
         }
         else
         {
             score = scrub(correct: vertCorrect, extra: vExtra) + scrub(correct: horizCorrect, extra: hExtra) + scrub(correct: leftToRightDiagCorrect, extra: lrExtra) + scrub(correct: rightToLeftDiagCorrect, extra: rlExtra)
-            score += Int(Double(gaussianDist[row][col]) * gausW)
+//            score += Int(Double(gaussianDist[row][col]) * gausW)
+            score += (Double(gaussianDist[row][col]) * gausW)
         }
         // Red check
 //        if(checkVal == 1)
@@ -179,10 +183,15 @@ class Board //: Hashable
 //        }
         if(checkVal == 1)
         {
-            if(score == Int.max)
+//            if(score == Int.max)
+//            {
+//                redScore = Int.max
+//            }
+            if(score == Double(Int.max))
             {
-                redScore = Int.max
+                redScore = Double(Int.max)
             }
+
             else
             {
                 redScore += score
@@ -190,9 +199,9 @@ class Board //: Hashable
         }
         else
         {
-            if(score == Int.max)
+            if(score == Double(Int.max))
             {
-                blueScore = Int.max
+                blueScore = Double(Int.max)
             }
             else
             {
@@ -367,7 +376,7 @@ class Board //: Hashable
         print()
     }
     
-    func scrub(correct: Int, extra: Int) -> Int
+    func scrub(correct: Int, extra: Int) -> Double// Int
     {
         if(correct + extra < 4)
         {
@@ -376,7 +385,8 @@ class Board //: Hashable
         }
         else
         {
-            let r = Int(pow(Double(mainW), Double(correct - 1))) + extra
+//            let r = Int(pow(Double(mainW), Double(correct - 1))) + extra
+            let r = pow(Double(mainW), Double(correct - 1)) + Double(extra)
 //            print("\(r)", terminator: " ")
             return r
         }
