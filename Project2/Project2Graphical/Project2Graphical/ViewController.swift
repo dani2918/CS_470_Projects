@@ -188,11 +188,11 @@ class ViewController: NSViewController {
         
     }
     
-    func clickOnButton(sender: NSButton)
+    func clickOnButton(sender: NSButton) -> Bool
     {
         if (winCondition || drawCondition)
         {
-            return
+            return false
         }
         errText.isHidden = true
         let sentInt = Int(sender.title)!
@@ -209,7 +209,7 @@ class ViewController: NSViewController {
         {
             // Error function
             errText.isHidden = false
-            return
+            return false
         }
         redrawCirc(row: firstOpen, col: sentInt, nscol: curColor)
         
@@ -233,7 +233,7 @@ class ViewController: NSViewController {
             winText.stringValue = "DRAW"
             winText.textColor = greenCol
             winText.isHidden = false
-            return
+            return true
         }
         
         let winCond = board!.checkBoard(row: firstOpen, col: sentInt, checkVal: storedBoard[firstOpen][sentInt])
@@ -294,7 +294,12 @@ class ViewController: NSViewController {
                 let n = negaMaxInit(b: board, color: color)
                 let button = NSButton()
                 button.title = String(n)
-                clickOnButton(sender: button)
+                var i = 0
+                while(!clickOnButton(sender: button))
+                {
+                    button.title = String(i)
+                    i += 1
+                }
                 
             }
             else if(curColor == redCol && (redAIButton.state == NSOnState || bothAIButton.state == NSOnState))
@@ -303,7 +308,12 @@ class ViewController: NSViewController {
                 let n = negaMaxInit(b: board, color: color)
                 let button = NSButton()
                 button.title = String(n)
-                clickOnButton(sender: button)
+                var i = 0
+                while(!clickOnButton(sender: button))
+                {
+                    button.title = String(i)
+                    i += 1
+                }
 //                print("n is: \(n), board is:")
 //                b.printBoard()
             }
@@ -319,6 +329,7 @@ class ViewController: NSViewController {
 //        open = open - closed
 //        closed = 0
 //        counter = 0
+        return true
     }
     
     func changeCol()

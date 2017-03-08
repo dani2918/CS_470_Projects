@@ -7,6 +7,14 @@ let order = [5,3,1,0,2,4,6]
 
 func negaMaxInit(b: Board?, color: Int) -> Int
 {
+    if(color == -1)
+    {
+        maxDepth = 9
+    }
+    else
+    {
+        maxDepth = 10
+    }
 //    print("color is \(color)")
     let start = NSDate()
     //let n = negaMax(b: b!, depth: maxDepth, color: color)

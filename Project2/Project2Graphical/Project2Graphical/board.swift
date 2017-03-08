@@ -9,10 +9,15 @@ import Foundation
 var counter = 0
 var open = 0
 var closed = 0
-var gaussianDist = [[3,4,5,7,5,4,3],[4,6,8,10,8,6,4],[5,8,11,13,11,8,5],[5,8,11,13,11,8,5],[4,6,8,10,8,6,4],[3,4,5,7,5,4,3]]
+var gaussianDist = [[3,4,5,7,5,4,3],
+                    [4,6,8,10,8,6,4],
+                    [5,8,11,13,11,8,5],
+                    [5,8,11,13,11,8,5],
+                    [4,6,8,10,8,6,4],
+                    [3,4,5,7,5,4,3]]
 
 var mainW = 3.0//Double(arc4random()) /  Double(UInt32.max) * 3.0 //1.85//2.80//3.25//Double(arc4random()) /  Double(UInt32.max) * 100.0
-var gausW = 100.0//Double(arc4random()) /  Double(UInt32.max) * 5.0//0.7//0.575//Double(arc4random()) /  Double(UInt32.max) * 100.0
+var gausW = 150.0//Double(arc4random()) /  Double(UInt32.max) * 5.0//0.7//0.575//Double(arc4random()) /  Double(UInt32.max) * 100.0
 
 class Board //: Hashable
 {
