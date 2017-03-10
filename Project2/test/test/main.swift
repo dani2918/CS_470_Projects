@@ -9,17 +9,18 @@
 import Foundation
 //
 //
-func queues() -> (Int, Int)
+func queues() -> (Int, [Int])
 {
-    var queue = Array(repeatElement(DispatchQueue(label: "test", qos: DispatchQoS.utility), count: 7))
+    let queue = DispatchQueue(label: "test", qos: .userInitiated, attributes: .concurrent)
+    let group = DispatchGroup()
+//    let queue2 = DispatchQueue(label: "test", qos: DispatchQoS.userInteractive)
     
-    let queue1 = DispatchQueue(label: "test", qos: DispatchQoS.utility)
-    let queue2 = DispatchQueue(label: "test", qos: DispatchQoS.userInteractive)
+    
     
     var sem1 = true
     var sem2 = true
     var j = 0
-    var k = 0
+    var k = Array(repeatElement(0, count: 7))
 //    queue1.async
 //        {
 //            
@@ -40,23 +41,51 @@ func queues() -> (Int, Int)
 //            print("❎",k)
 //            sem2 = false
 //    }
+//    for i in 0..<7
+//    {
+//        queue1.async {
+//            for i in 0..<10000
+//            {
+//                j += i
+//            }
+//            print(i)
+//            print("🛑",j)
+//            
+//
+//        }
+//        
+//    }
+//    
+//    while(sem1)
+//    {
+//        
+//    }
+    
     for i in 0..<7
     {
-        queue[i].async {
-            for i in 0..<10000
+        queue.async(group: group)
+        {
+            for index in 0..<10000
             {
-                j += i
+                k[i] += index * i
             }
-            print("🛑",j)
-            
-
+//            print("🛑",j)
+//            k.append(j)
         }
     }
-    while(sem1)
+    
+    group.notify(queue: queue)
     {
-        
+        print("done")
+        sem1 = false
     }
+//    while(sem1)
+//    {
+//        
+//    }
+    let _ = group.wait()
     return(j,k)
+    
 }
 
 let l = queues()
@@ -70,5 +99,8 @@ let block = DispatchWorkItem
 {
     
 }
+
+let v = Double(Int.max)
+print(v)
 
 
