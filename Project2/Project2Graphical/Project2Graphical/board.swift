@@ -16,14 +16,13 @@ var gaussianDist = [[3,4,5,7,5,4,3],
                     [4,6,8,10,8,6,4],
                     [3,4,5,7,5,4,3]]
 
-var mainW = 3.0//Double(arc4random()) /  Double(UInt32.max) * 3.0 //1.85//2.80//3.25//Double(arc4random()) /  Double(UInt32.max) * 100.0
-var gausW = 150.0//Double(arc4random()) /  Double(UInt32.max) * 5.0//0.7//0.575//Double(arc4random()) /  Double(UInt32.max) * 100.0
+var mainW = 3.0
+var gausW = 150.0
 
-class Board //: Hashable
+class Board
 {
     weak var parent: Board?
     var child: [Board?]
-//    var heuristic = 0
     var heuristic = 0.0
     var gameState = Array(repeating: Array(repeating: 0, count: 7), count: 6)
     // Array to hold solns for each of the four winning directions
@@ -31,36 +30,12 @@ class Board //: Hashable
     var soln = [(Int, Int)]()
     var vertCorrect = 0, horizCorrect = 0, leftToRightDiagCorrect = 0, rightToLeftDiagCorrect = 0, maxCorrect = 0
     var vExtra = 0,  hExtra = 0,  lrExtra = 0,  rlExtra = 0
-//    var redScore = 0
-//    var blueScore = 0
-        var redScore = 0.0
-        var blueScore = 0.0
+    var redScore = 0.0
+    var blueScore = 0.0
     var openSpaces: Int
     var solved = false
     var increasing = true
     var decreasing = true
-    
-    
-//    public var hashValue: Int
-//    {
-//        return ObjectIdentifier(self).hashValue
-//    }
-//    
-//    static func ==(lhs: Board, rhs: Board) -> Bool
-//    {
-//        var test = true
-//        for i in 0..<6
-//        {
-//            for j in 0..<7
-//            {
-//                if (lhs.gameState[i][j] != rhs.gameState[i][j])
-//                {
-//                    test = false
-//                }
-//            }
-//        }
-//        return test
-//    }
     
     enum Direction
     {
@@ -72,7 +47,6 @@ class Board //: Hashable
         case nw
         case se
         case sw
-        
     }
     init()
     {
@@ -80,7 +54,6 @@ class Board //: Hashable
         blueScore = 0
         child = [Board]()
         openSpaces = 6 * 7
-        
         open += 1
     }
     init(b: [[Int]])
@@ -90,7 +63,6 @@ class Board //: Hashable
         blueScore = 0
         child = [Board]()
         openSpaces = 6 * 7
-        
         open += 1
     }
     
@@ -112,7 +84,6 @@ class Board //: Hashable
         blueScore = parent!.blueScore
         child = [Board]()
         openSpaces = par.openSpaces - 1
-        
         open += 1
     }
     
@@ -141,7 +112,6 @@ class Board //: Hashable
 //        print("\n")
 //        print(vertCorrect, horizCorrect, leftToRightDiagCorrect, rightToLeftDiagCorrect)
 //        print(vExtra, hExtra, lrExtra, rlExtra)
-//        
         
         if(vertCorrect >= 4)
         {
@@ -174,24 +144,11 @@ class Board //: Hashable
         else
         {
             score = scrub(correct: vertCorrect, extra: vExtra) + scrub(correct: horizCorrect, extra: hExtra) + scrub(correct: leftToRightDiagCorrect, extra: lrExtra) + scrub(correct: rightToLeftDiagCorrect, extra: rlExtra)
-//            score += Int(Double(gaussianDist[row][col]) * gausW)
             score += (Double(gaussianDist[row][col]) * gausW)
         }
-        // Red check
-//        if(checkVal == 1)
-//        {
-//            redScore = score
-//        }
-//        else
-//        {
-//            blueScore = score
-//        }
+
         if(checkVal == 1)
         {
-//            if(score == Int.max)
-//            {
-//                redScore = Int.max
-//            }
             if(score == Double(Int.max))
             {
                 redScore = Double(Int.max)
@@ -238,7 +195,6 @@ class Board //: Hashable
                     vExtra += 1
                     increasing = false
                     return checkBoardHelper(row: row + 1, col: col, dir: .n, checkVal: checkVal, depth: depth + 1)
-                    
                 }
             }
             return 0
@@ -396,5 +352,4 @@ class Board //: Hashable
             return r
         }
     }
-    
 }

@@ -1,7 +1,6 @@
 import Foundation
 var maxDepth = 10
 
-
 // For reordering
 let order = [5,3,1,0,2,4,6]
 
@@ -64,7 +63,6 @@ func negaMaxFirstChildren(b: Board?, depth: Int, color: Int) -> [Double]
     {
         b!.child.append(Board())
     }
-    
     let queue = DispatchQueue(label: "run", qos: .userInitiated, attributes: .concurrent)
     let group = DispatchGroup()
     
@@ -88,7 +86,6 @@ func negaMaxFirstChildren(b: Board?, depth: Int, color: Int) -> [Double]
     {
 //        print("done")
     }
-    
     let _ = group.wait()
     print("N arr is:",n)
     return n
@@ -138,7 +135,6 @@ func negaMax(b: Board?, depth: Int, alp: Double, bet: Double, color: Int) -> Dou
         {
             bestArr.append(Double(Int.min))
         }
-        
     }
     
     b!.heuristic = bestValue
@@ -179,7 +175,7 @@ func move(b: Board?, col: Int, turn: Int) -> Board?
     {
         newBoard!.gameState[firstOpen][col] = 1
     }
-        // Blue/p2 turn
+    // Blue/p2 turn
     else
     {
         newBoard!.gameState[firstOpen][col] = 2

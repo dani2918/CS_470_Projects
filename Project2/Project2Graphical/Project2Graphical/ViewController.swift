@@ -44,7 +44,6 @@ class ViewController: NSViewController {
         setupColors()
         moveCounter.stringValue = ("\(1)")
         turn = 1
-        //blueAIButton.state = NSOnState
         par = Board(b: storedBoard)
         if(firstPlaythrough)
         {
@@ -63,10 +62,10 @@ class ViewController: NSViewController {
             {
             case "`", "0":
                 button.title = "0"
-                clickOnButton(sender: button)
+                _ = clickOnButton(sender: button)
                 break;
             case "1","2","3","4","5","6":
-                clickOnButton(sender: button)
+                _ = clickOnButton(sender: button)
                 break;
             default:
                 break;
@@ -103,7 +102,6 @@ class ViewController: NSViewController {
         {
             let floatSize = CGFloat(buttonArray.count)
             let label = NSButton(frame: NSMakeRect(width/floatSize * CGFloat(i) + xmin, ymin - 5 - height/floatSize, width/floatSize, height/floatSize ))
-            
             let textSize = CGFloat((buttonArray.count * -1 + 9) * 10)
             label.title = "\(i)"
             label.alignment = NSTextAlignment.center
@@ -153,7 +151,7 @@ class ViewController: NSViewController {
         {
             let button = NSButton()
             button.title = "3"
-            clickOnButton(sender: button)
+            _ = clickOnButton(sender: button)
         }
     }
     
@@ -166,7 +164,6 @@ class ViewController: NSViewController {
         let xSize = CGFloat(7)
         let ySize = CGFloat(6)
         let rect = NSMakeRect(width/xSize * CGFloat(col) + 5.0, height/ySize * CGFloat(newRow) + 10.0, width/xSize - 10.0 , height/ySize - 5.0 )
-        
         let newCircButton = Button(frame: rect, col: color)
         
         if let taggedView = boardSpace.viewWithTag(newRow*10+col + 1)
@@ -179,10 +176,6 @@ class ViewController: NSViewController {
         }
         else {  print("No such tag") }
         newCircButton.tag = newRow*10+col + 1
-//        let textSize = CGFloat((buttonArray.count * -1 + 9) * 10)
-//        newCircButton.title = "\(turn)"
-//        newCircButton.alignment = NSTextAlignment.center
-//        newCircButton.font = NSFont(name: "Helvetica", size: textSize)
         boardSpace.addSubview(newCircButton)
         circleArray[newRow][col] = newCircButton
         
@@ -225,7 +218,6 @@ class ViewController: NSViewController {
         }
         var board: Board?
         board = Board(b: storedBoard, os: 6*7+1 - turn)
-//        print(board!.eval)
         if(board!.openSpaces == 0)
         {
 //            print("BOARD FULL")
@@ -235,11 +227,8 @@ class ViewController: NSViewController {
             winText.isHidden = false
             return true
         }
-        
         let winCond = board!.checkBoard(row: firstOpen, col: sentInt, checkVal: storedBoard[firstOpen][sentInt])
-        
 //        print("Max is: ", board.maxCorrect)
-        
         if(winCond != 0)
         {
             // Red/p1 turn
@@ -248,7 +237,7 @@ class ViewController: NSViewController {
                 winText.stringValue = "Red Wins"
                 winText.textColor = redCol
             }
-                // Blue/p2 turn
+            // Blue/p2 turn
             else
             {
                 winText.stringValue = "Blue Wins"
@@ -317,8 +306,6 @@ class ViewController: NSViewController {
 //                print("n is: \(n), board is:")
 //                b.printBoard()
             }
-
-    
         }
         board = nil
         par = nil
@@ -348,10 +335,6 @@ class ViewController: NSViewController {
     @IBAction func aiRadioButtons(_ sender: NSButton)
     {
         // Connects radio buttons
-        
     }
-    
-    
-
 }
 
